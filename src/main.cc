@@ -1,11 +1,11 @@
+#include <QCamera>
 #include <QGuiApplication>
+#include <QOrbitCameraController>
+#include <QPhongMaterial>
 #include <QRenderSettings>
-#include <Qt3DCore/QTransform>
-#include <Qt3DExtras/QOrbitCameraController>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QTorusMesh>
-#include <Qt3DExtras/Qt3DWindow>
-#include <Qt3DRender/QCamera>
+#include <QTorusMesh>
+#include <QTransform>
+#include <Qt3DWindow>
 
 Qt3DCore::QEntity *createScene() {
   Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
