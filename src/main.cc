@@ -7,6 +7,8 @@
 #include <QTransform>
 #include <Qt3DWindow>
 
+#include "src/grid.hh"
+
 Qt3DCore::QEntity *createScene() {
   Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
 

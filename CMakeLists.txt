@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.0)
 project(mgrid)
 
-
 find_package(Qt53DExtras)
 
 add_compile_options(-Wall -Wextra)
+include_directories(.)
 
 add_executable(mgrid src/main.cc)
 
