@@ -7,7 +7,13 @@
 #include <QTransform>
 #include <Qt3DWindow>
 
-#include "src/grid.hh"
+#include "src/mesh.hh"
+
+Mesh MakeCube() {
+  Mesh mesh;
+  
+  return mesh;
+}
 
 Qt3DCore::QEntity *createScene() {
   Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
