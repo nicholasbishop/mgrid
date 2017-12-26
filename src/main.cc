@@ -6,6 +6,7 @@
 #include <QGeometryRenderer>
 #include <QGuiApplication>
 #include <QObjectPicker>
+#include <Qt3DRender/QParameter>
 #include <QOrbitCameraController>
 #include <QPhongMaterial>
 #include <QPickEvent>
@@ -72,7 +73,6 @@ Qt3DCore::QEntity *createScene() {
   gridEntity->addComponent(gridRenderer);
   auto *gridMaterial = new GridMaterial();
   gridEntity->addComponent(gridMaterial);
-  // gridEntity->addComponent(material);
 
   auto *light = new Qt3DRender::QDirectionalLight();
   light->setWorldDirection({1, 1, -1});

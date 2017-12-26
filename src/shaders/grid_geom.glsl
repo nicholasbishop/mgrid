@@ -1,7 +1,6 @@
 #version 410
 
-uniform mat4 Modelview;
-uniform mat3 NormalMatrix;
+uniform mat3 normalMatrix;
 layout(triangles) in;
 layout(triangle_strip, max_vertices = 3) out;
 in vec3 tePosition[3];
@@ -14,7 +13,7 @@ void main()
 {
     vec3 A = tePosition[2] - tePosition[0];
     vec3 B = tePosition[1] - tePosition[0];
-    gFacetNormal = NormalMatrix * normalize(cross(A, B));
+    gFacetNormal = normalize(cross(A, B));
     
     gPatchDistance = tePatchDistance[0];
     gTriDistance = vec3(1, 0, 0);

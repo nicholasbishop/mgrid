@@ -4,8 +4,8 @@ layout(vertices = 4) out;
 in vec3 vPosition[];
 out vec3 tcPosition[];
 
-const int inner = 3;
-const int outer = 4;
+const int inner = 128;
+const int outer = 128;
 	 
 #define ID gl_InvocationID
 	 

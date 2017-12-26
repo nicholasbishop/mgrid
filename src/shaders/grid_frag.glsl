@@ -28,5 +28,7 @@ void main()
         color = d2 * color + d1 * d2 * InnerLineColor;
     }
 
+    color *= vec3(1.0) - gFacetNormal;
+
     FragColor = vec4(color, 1.0);
 }

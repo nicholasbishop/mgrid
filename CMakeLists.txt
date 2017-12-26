@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(mgrid)
 
+set(CMAKE_AUTOMOC on)
 set(CMAKE_AUTORCC on)
 
 find_package(Qt53DExtras)

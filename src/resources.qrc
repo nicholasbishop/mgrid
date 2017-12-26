@@ -5,5 +5,7 @@
   <file>shaders/grid_tess_ctrl.glsl</file>
   <file>shaders/grid_tess_eval.glsl</file>
   <file>shaders/grid_vert.glsl</file>
+
+  <file>images/placeholder.png</file>
 </qresource>
 </RCC>

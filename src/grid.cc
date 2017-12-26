@@ -1,5 +1,6 @@
 #include "grid.hh"
 
+#include <cassert>
 #include <memory>
 
 #include <QUrl>
@@ -25,6 +26,43 @@ using Qt3DRender::QMaterial;
 using Qt3DRender::QRenderPass;
 using Qt3DRender::QShaderProgram;
 using Qt3DRender::QTechnique;
+
+static QByteArray create_tex_data() {
+  const int w = 64;
+  const int h = 64;
+  const int pointSize = 3 * sizeof(float);
+  const int pointCount = w * h;
+  QByteArray data;
+  data.resize(pointSize * pointCount);
+  float *f = reinterpret_cast<float *>(data.data());
+
+  for (int y = 0; y < h; y++) {
+    for (int x = 0; x < w; x++) {
+      const float z = (rand() % 128) / 128.0f;
+      f[(y * w + x) * 3 + 0] = x;
+      f[(y * w + x) * 3 + 1] = y;
+      f[(y * w + x) * 3 + 2] = z;
+    }
+  }
+
+  return data;
+}
+
+ImageDataGen::ImageDataGen() {
+  data_->setData(create_tex_data(), 1);
+  data_->setWidth(64);
+  data_->setHeight(64);
+  data_->setPixelFormat(QOpenGLTexture::RGB);
+  data_->setPixelType(QOpenGLTexture::Float32);
+}
+
+GridTextureImage::GridTextureImage() {
+}
+
+Qt3DRender::QTextureImageDataGeneratorPtr
+GridTextureImage::dataGenerator() const {
+  return gen_;
+}
 
 GridMaterial::GridMaterial() {
   // Set the shader on the render pass
@@ -59,6 +97,18 @@ GridMaterial::GridMaterial() {
   technique_.graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
 
   effect_.addTechnique(&technique_);
+  effect_.addParameter(&texParam_);
+
+  texLoader_.setSource(
+      QUrl(QStringLiteral("qrc:///images/placeholder.png")));
+
+  texParam_.setName(QStringLiteral("gridTex"));
+  texParam_.setValue(QVariant::fromValue(&texLoader_));
+
+  // placeholderTexImage_.setSource(
+  //     QUrl(QStringLiteral("qrc:///placeholder.png")));
+  // gridTex_.addTextureImage(&placeholderTexImage_);
+
   setEffect(&effect_);
 
   connect(&prog_, &QShaderProgram::logChanged,
@@ -135,6 +185,11 @@ GridRenderer::GridRenderer(Qt3DCore::QNode *parent)
   setVerticesPerPatch(4);
   setVertexCount(4);
   setPrimitiveType(Patches);
+  // gridTex_.addTextureImage(&gridTexImage_);
+  // placeholderTexImage_.setSource(
+  //     QUrl(QStringLiteral("qrc:///placeholder.png")));
+  // gridTex_.addTextureImage(&placeholderTexImage_);
+  // gridTex_.setSize(64, 64);
 }
 
 GridRenderer::~GridRenderer() {}
