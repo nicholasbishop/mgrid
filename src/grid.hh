@@ -12,6 +12,8 @@
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
 
+#include "src/grid_texture.hh"
+
 class ImageDataGen : public Qt3DRender::QTextureImageDataGenerator {
  public:
   ImageDataGen();
