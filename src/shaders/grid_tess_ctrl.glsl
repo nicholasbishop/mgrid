@@ -9,11 +9,12 @@ out vec3 tcPosition[];
 void main()
 {
   tcPosition[ID] = vPosition[ID];
-  if (ID == 0) {
-    gl_TessLevelInner[0] = 6;
+  //if (ID == 0) {
+    gl_TessLevelInner[0] = 4;
+    gl_TessLevelInner[1] = 4;
     gl_TessLevelOuter[0] = 6;
     gl_TessLevelOuter[1] = 6;
     gl_TessLevelOuter[2] = 6;
     gl_TessLevelOuter[3] = 6;
-  }
+    //}
 }

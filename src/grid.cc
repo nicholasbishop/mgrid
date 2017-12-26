@@ -43,6 +43,8 @@ std::unique_ptr<QMaterial> create_grid_material() {
       QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_tess_ctrl.glsl")));
   prog->setTessellationEvaluationShaderCode(
       QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_tess_eval.glsl")));
+  prog->setGeometryShaderCode(
+      QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_geom.glsl")));
   prog->setFragmentShaderCode(
       QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_frag.glsl")));
 
