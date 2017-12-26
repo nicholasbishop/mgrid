@@ -29,7 +29,6 @@ Grid makeBumpyGrid(int w, int h) {
     for (int x = 0; x < grid.width; x++) {
       const float z = (rand() % 128) / 128.0f;
       grid.points.emplace_back(x, y, z);
-      // qInfo() << x << y << z;
     }
   }
   return grid;
