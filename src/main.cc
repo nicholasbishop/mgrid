@@ -1,19 +1,38 @@
+#include <QAttribute>
+#include <QBuffer>
 #include <QCamera>
 #include <QDirectionalLight>
+#include <QGeometry>
+#include <QGeometryRenderer>
 #include <QGuiApplication>
+#include <QObjectPicker>
 #include <QOrbitCameraController>
 #include <QPhongMaterial>
+#include <QPickEvent>
 #include <QRenderSettings>
 #include <QTorusMesh>
 #include <QTransform>
 #include <Qt3DWindow>
 
+#include "src/grid.hh"
 #include "src/mesh.hh"
 
-Mesh MakeCube() {
-  Mesh mesh;
-  
-  return mesh;
+using Qt3DCore::QEntity;
+using namespace Qt3DRender;
+
+Grid makeBumpyGrid(int w, int h) {
+  Grid grid;
+  grid.width = w;
+  grid.height = h;
+  grid.points.reserve(grid.width * grid.height);
+  for (int y = 0; y < grid.height; y++) {
+    for (int x = 0; x < grid.width; x++) {
+      const float z = (rand() % 128) / 128.0f;
+      grid.points.emplace_back(x, y, z);
+      // qInfo() << x << y << z;
+    }
+  }
+  return grid;
 }
 
 Qt3DCore::QEntity *createScene() {
@@ -32,11 +51,44 @@ Qt3DCore::QEntity *createScene() {
   torusEntity->addComponent(torusMesh);
   torusEntity->addComponent(material);
 
+  auto *bumpyEntity = new QEntity(rootEntity);
+  auto* bumpyGeom = new Qt3DRender::QGeometry();
+  Grid grid = makeBumpyGrid(64, 64);
+  auto* bumpyBuf = new QBuffer();
+  bumpyBuf->setData(QByteArray((char*)grid.points.data(), grid.points.size() *
+                               sizeof(QVector3D)));
+  auto* bumpyAttr = new QAttribute(
+      bumpyBuf,
+      QAttribute::defaultPositionAttributeName(),
+      QAttribute::Float,
+      sizeof(float) * 3,
+      grid.width * grid.height,
+      0, 0);
+  bumpyAttr->setAttributeType(QAttribute::VertexAttribute);
+  bumpyGeom->addAttribute(bumpyAttr);
+  auto* bumpyMesh = new QGeometryRenderer(bumpyGeom);
+  bumpyMesh->setVertexCount(grid.width * grid.height);
+  bumpyMesh->setPrimitiveType(QGeometryRenderer::Points);
+  bumpyEntity->addComponent(bumpyMesh);
+  bumpyEntity->addComponent(material);
+
+  auto* gridEntity = new QEntity(rootEntity);
+  auto* gridRenderer = new GridRenderer();
+  gridEntity->addComponent(gridRenderer);
+  gridEntity->addComponent(material);
+
   auto* light = new Qt3DRender::QDirectionalLight();
   light->setWorldDirection({1, 1, -1});
   rootEntity->addComponent(light);
 
-
+  // Picking
+  auto *picker = new Qt3DRender::QObjectPicker();
+  QObject::connect(picker, &Qt3DRender::QObjectPicker::moved,
+                   [](Qt3DRender::QPickEvent*) {
+                     qInfo() << "moved";
+                   });
+  rootEntity->addComponent(picker);
+  
   return rootEntity;
 }
 
@@ -46,6 +98,7 @@ int main(int argc, char *argv[]) {
   view.setWidth(640);
   view.setHeight(480);
   view.renderSettings()->setRenderPolicy(Qt3DRender::QRenderSettings::OnDemand);
+  //view.renderSettings()->pickingSettings()->
 
   Qt3DCore::QEntity *scene = createScene();
 
