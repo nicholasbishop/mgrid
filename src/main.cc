@@ -81,14 +81,6 @@ Qt3DCore::QEntity *createScene() {
   auto* light = new Qt3DRender::QDirectionalLight();
   light->setWorldDirection({1, 1, -1});
   rootEntity->addComponent(light);
-
-  // Picking
-  auto *picker = new Qt3DRender::QObjectPicker();
-  QObject::connect(picker, &Qt3DRender::QObjectPicker::moved,
-                   [](Qt3DRender::QPickEvent*) {
-                     qInfo() << "moved";
-                   });
-  rootEntity->addComponent(picker);
   
   return rootEntity;
 }
@@ -99,7 +91,6 @@ int main(int argc, char *argv[]) {
   view.setWidth(640);
   view.setHeight(480);
   view.renderSettings()->setRenderPolicy(Qt3DRender::QRenderSettings::OnDemand);
-  //view.renderSettings()->pickingSettings()->
 
   Qt3DCore::QEntity *scene = createScene();
 
