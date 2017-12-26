@@ -68,9 +68,6 @@ std::unique_ptr<QMaterial> create_grid_material() {
       qInfo() << prog->log();
     });
 
-  // Set different parameters on the materials
-  // const QString parameterName = QStringLiteral("color");
-  // material1->addParameter(new QParameter(parameterName, QColor::fromRgbF(0.0f, 1.0f, 0.0f, 1.0f)));
   return material;
 }
 
