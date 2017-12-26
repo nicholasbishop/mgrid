@@ -85,9 +85,6 @@ GridGeometry::GridGeometry(QNode *parent) : QGeometry(parent) {
   m_vertexBuffer =
       new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, this);
 
-  // vec3 pos
-  const quint32 elementSize = 3;
-  const quint32 stride = elementSize * sizeof(float);
   const int nVerts = 4;
 
   m_positionAttribute->setName(
@@ -97,7 +94,6 @@ GridGeometry::GridGeometry(QNode *parent) : QGeometry(parent) {
   m_positionAttribute->setAttributeType(
       Qt3DRender::QAttribute::VertexAttribute);
   m_positionAttribute->setBuffer(m_vertexBuffer);
-  m_positionAttribute->setByteStride(stride);
   m_positionAttribute->setCount(nVerts);
 
   createVertexData();
@@ -107,7 +103,6 @@ GridGeometry::GridGeometry(QNode *parent) : QGeometry(parent) {
 
 void GridGeometry::createVertexData() {
   const int verticesCount = 4;
-  // vec3 pos, vec3 normal
   const quint32 vertexSize = 3 * sizeof(float);
 
   QByteArray verticesData;
