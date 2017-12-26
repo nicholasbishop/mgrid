@@ -1,4 +1,5 @@
 #include <QCamera>
+#include <QDirectionalLight>
 #include <QGuiApplication>
 #include <QOrbitCameraController>
 #include <QPhongMaterial>
@@ -18,7 +19,8 @@ Mesh MakeCube() {
 Qt3DCore::QEntity *createScene() {
   Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
 
-  Qt3DRender::QMaterial *material = new Qt3DExtras::QPhongMaterial(rootEntity);
+  auto *material = new Qt3DExtras::QPhongMaterial(rootEntity);
+  material->setDiffuse(QColor(204, 205, 255));
 
   Qt3DCore::QEntity *torusEntity = new Qt3DCore::QEntity(rootEntity);
   Qt3DExtras::QTorusMesh *torusMesh = new Qt3DExtras::QTorusMesh;
@@ -30,12 +32,19 @@ Qt3DCore::QEntity *createScene() {
   torusEntity->addComponent(torusMesh);
   torusEntity->addComponent(material);
 
+  auto* light = new Qt3DRender::QDirectionalLight();
+  light->setWorldDirection({1, 1, -1});
+  rootEntity->addComponent(light);
+
+
   return rootEntity;
 }
 
 int main(int argc, char *argv[]) {
   QGuiApplication app(argc, argv);
   Qt3DExtras::Qt3DWindow view;
+  view.setWidth(640);
+  view.setHeight(480);
   view.renderSettings()->setRenderPolicy(Qt3DRender::QRenderSettings::OnDemand);
 
   Qt3DCore::QEntity *scene = createScene();
