@@ -75,7 +75,9 @@ Qt3DCore::QEntity *createScene() {
   auto* gridEntity = new QEntity(rootEntity);
   auto* gridRenderer = new GridRenderer();
   gridEntity->addComponent(gridRenderer);
-  gridEntity->addComponent(material);
+  auto* gridMaterial = create_grid_material().release();
+  gridEntity->addComponent(gridMaterial);
+  //gridEntity->addComponent(material);
 
   auto* light = new Qt3DRender::QDirectionalLight();
   light->setWorldDirection({1, 1, -1});

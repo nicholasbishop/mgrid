@@ -1,11 +1,72 @@
 #include "grid.hh"
 
+#include <memory>
+
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGeometry>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QTechnique>
+#include <QUrl>
 
 #include <QVector3D>
 #include <qmath.h>
+
+using Qt3DRender::QEffect;
+using Qt3DRender::QFilterKey;
+using Qt3DRender::QGraphicsApiFilter;
+using Qt3DRender::QMaterial;
+using Qt3DRender::QRenderPass;
+using Qt3DRender::QShaderProgram;
+using Qt3DRender::QTechnique;
+
+std::unique_ptr<QMaterial> create_grid_material() {
+  std::unique_ptr<QMaterial> material{new QMaterial()};
+
+  // Create effect, technique, render pass and shader
+  QEffect *effect = new QEffect();
+  QTechnique *technique = new QTechnique();
+  QRenderPass *pass = new QRenderPass();
+  QShaderProgram *prog = new QShaderProgram();
+
+  // Set the shader on the render pass
+  pass->setShaderProgram(prog);
+  prog->setVertexShaderCode(
+      QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_vert.glsl")));
+  prog->setFragmentShaderCode(
+      QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_frag.glsl")));
+
+  // Add the pass to the technique
+  technique->addRenderPass(pass);
+
+  auto* filter = new QFilterKey();
+  filter->setName(QStringLiteral("renderingStyle"));
+  filter->setValue(QStringLiteral("forward"));
+
+  technique->addFilterKey(filter);
+
+  // Set the targeted GL version for the technique
+  technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+  technique->graphicsApiFilter()->setMajorVersion(4);
+  technique->graphicsApiFilter()->setMinorVersion(1);
+  technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
+
+  effect->addTechnique(technique);
+  material->setEffect(effect);
+
+  QObject::connect(prog, &QShaderProgram::logChanged, [prog]() {
+      qInfo() << prog->log();
+    });
+
+  // Set different parameters on the materials
+  // const QString parameterName = QStringLiteral("color");
+  // material1->addParameter(new QParameter(parameterName, QColor::fromRgbF(0.0f, 1.0f, 0.0f, 1.0f)));
+  return material;
+}
 
 class GridGeometry : public Qt3DRender::QGeometry {
 public:
@@ -25,6 +86,7 @@ private:
 };
 
 GridGeometry::GridGeometry(QNode *parent) : QGeometry(parent) {
+
   m_positionAttribute = new Qt3DRender::QAttribute(this);
   m_normalAttribute = new Qt3DRender::QAttribute(this);
   m_indexAttribute = new Qt3DRender::QAttribute(this);
