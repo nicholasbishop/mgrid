@@ -39,6 +39,10 @@ std::unique_ptr<QMaterial> create_grid_material() {
   pass->setShaderProgram(prog);
   prog->setVertexShaderCode(
       QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_vert.glsl")));
+  prog->setTessellationControlShaderCode(
+      QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_tess_ctrl.glsl")));
+  prog->setTessellationEvaluationShaderCode(
+      QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_tess_eval.glsl")));
   prog->setFragmentShaderCode(
       QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_frag.glsl")));
 
@@ -143,7 +147,9 @@ void GridGeometry::createVertexData() {
 GridRenderer::GridRenderer(Qt3DCore::QNode *parent)
     : QGeometryRenderer(parent) {
   setGeometry(new GridGeometry(this));
-  setPrimitiveType(LineLoop);
+  setVerticesPerPatch(4);
+  setVertexCount(4);
+  setPrimitiveType(Patches);
 }
 
 GridRenderer::~GridRenderer() {}

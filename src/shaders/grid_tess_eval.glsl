@@ -1,18 +1,19 @@
 #version 400
 	 
-layout(triangles, equal_spacing, cw) in;
+layout(quads) in;
 in vec3 tcPosition[];
 out vec3 tePosition;
-out vec3 tePatchDistance;
-uniform mat4 Projection;
-uniform mat4 Modelview;
-	 
+out vec4 tePatchDistance;
+
+uniform mat4 modelViewProjection;
+
 void main()
 {
-  vec3 p0 = gl_TessCoord.x * tcPosition[0];
-  vec3 p1 = gl_TessCoord.y * tcPosition[1];
-  vec3 p2 = gl_TessCoord.z * tcPosition[2];
-  tePatchDistance = gl_TessCoord;
-  tePosition = normalize(p0 + p1 + p2);
-  gl_Position = Projection * Modelview * vec4(tePosition, 1);
+  float u = gl_TessCoord.x, v = gl_TessCoord.y;
+  vec3 a = mix(tcPosition[0], tcPosition[1], u);
+  vec3 b = mix(tcPosition[3], tcPosition[2], u);
+  tePosition = mix(a, b, v);
+  tePosition.z = pow(u, 2) * 5 + pow(v, 2) * 5;
+  tePatchDistance = vec4(u, v, 1-u, 1-v);
+  gl_Position = modelViewProjection * vec4(tePosition, 1);
 }
