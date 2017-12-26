@@ -22,11 +22,6 @@ private:
 
   Qt3DRender::QBuffer *m_vertexBuffer;
   Qt3DRender::QBuffer *m_indexBuffer;
-
-  int m_rings = 7;
-  int m_slices = 16;
-  float m_radius = 1.0f;
-  float m_length = 4.0f;
 };
 
 GridGeometry::GridGeometry(QNode *parent) : QGeometry(parent) {
@@ -42,8 +37,8 @@ GridGeometry::GridGeometry(QNode *parent) : QGeometry(parent) {
   // vec3 pos, vec3 normal
   const quint32 elementSize = 3 + 3;
   const quint32 stride = elementSize * sizeof(float);
-  const int nVerts = (m_slices + 1) * m_rings + 2 * (m_slices + 1) + 2;
-  const int faces = (m_slices * 2) * (m_rings - 1) + (m_slices * 2);
+  const int nVerts = 4;
+  const int faces = 2;
 
   m_positionAttribute->setName(
       Qt3DRender::QAttribute::defaultPositionAttributeName());
