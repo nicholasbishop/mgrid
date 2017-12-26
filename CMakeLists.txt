@@ -9,8 +9,8 @@ add_compile_options(-Wall -Wextra)
 include_directories(.)
 
 add_executable(mgrid
-  shaders/shaders.qrc
   src/grid.cc
-  src/main.cc)
+  src/main.cc
+  src/resources.qrc)
 
 target_link_libraries(mgrid Qt5::3DExtras)
