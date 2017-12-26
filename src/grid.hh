@@ -17,10 +17,10 @@ public:
 };
 
 class GridMaterial : public Qt3DRender::QMaterial {
- public:
+public:
   GridMaterial();
 
- private:
+private:
   Qt3DRender::QEffect effect_;
   Qt3DRender::QTechnique technique_;
   Qt3DRender::QRenderPass pass_;

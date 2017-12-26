@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include <QUrl>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QCullFace>
@@ -12,7 +13,6 @@
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QTechnique>
-#include <QUrl>
 
 #include <QVector3D>
 #include <qmath.h>
@@ -40,13 +40,13 @@ GridMaterial::GridMaterial() {
   prog_.setFragmentShaderCode(
       QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_frag.glsl")));
 
-  auto* cull = new QCullFace();
+  auto *cull = new QCullFace();
   cull->setMode(QCullFace::NoCulling);
   pass_.addRenderState(cull);
 
   technique_.addRenderPass(&pass_);
 
-  auto* filter = new QFilterKey();
+  auto *filter = new QFilterKey();
   filter->setName(QStringLiteral("renderingStyle"));
   filter->setValue(QStringLiteral("forward"));
 
@@ -61,9 +61,8 @@ GridMaterial::GridMaterial() {
   effect_.addTechnique(&technique_);
   setEffect(&effect_);
 
-  connect(&prog_, &QShaderProgram::logChanged, [this]() {
-      qInfo() << prog_.log();
-    });
+  connect(&prog_, &QShaderProgram::logChanged,
+          [this]() { qInfo() << prog_.log(); });
 }
 
 class GridGeometry : public Qt3DRender::QGeometry {

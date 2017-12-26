@@ -51,37 +51,33 @@ Qt3DCore::QEntity *createScene() {
   torusEntity->addComponent(material);
 
   auto *bumpyEntity = new QEntity(rootEntity);
-  auto* bumpyGeom = new Qt3DRender::QGeometry();
+  auto *bumpyGeom = new Qt3DRender::QGeometry();
   Grid grid = makeBumpyGrid(64, 64);
-  auto* bumpyBuf = new QBuffer();
-  bumpyBuf->setData(QByteArray((char*)grid.points.data(), grid.points.size() *
-                               sizeof(QVector3D)));
-  auto* bumpyAttr = new QAttribute(
-      bumpyBuf,
-      QAttribute::defaultPositionAttributeName(),
-      QAttribute::Float,
-      sizeof(float) * 3,
-      grid.width * grid.height,
-      0, 0);
+  auto *bumpyBuf = new QBuffer();
+  bumpyBuf->setData(QByteArray((char *)grid.points.data(),
+                               grid.points.size() * sizeof(QVector3D)));
+  auto *bumpyAttr = new QAttribute(
+      bumpyBuf, QAttribute::defaultPositionAttributeName(), QAttribute::Float,
+      sizeof(float) * 3, grid.width * grid.height, 0, 0);
   bumpyAttr->setAttributeType(QAttribute::VertexAttribute);
   bumpyGeom->addAttribute(bumpyAttr);
-  auto* bumpyMesh = new QGeometryRenderer(bumpyGeom);
+  auto *bumpyMesh = new QGeometryRenderer(bumpyGeom);
   bumpyMesh->setVertexCount(grid.width * grid.height);
   bumpyMesh->setPrimitiveType(QGeometryRenderer::Points);
   bumpyEntity->addComponent(bumpyMesh);
   bumpyEntity->addComponent(material);
 
-  auto* gridEntity = new QEntity(rootEntity);
-  auto* gridRenderer = new GridRenderer();
+  auto *gridEntity = new QEntity(rootEntity);
+  auto *gridRenderer = new GridRenderer();
   gridEntity->addComponent(gridRenderer);
-  auto* gridMaterial = new GridMaterial();
+  auto *gridMaterial = new GridMaterial();
   gridEntity->addComponent(gridMaterial);
-  //gridEntity->addComponent(material);
+  // gridEntity->addComponent(material);
 
-  auto* light = new Qt3DRender::QDirectionalLight();
+  auto *light = new Qt3DRender::QDirectionalLight();
   light->setWorldDirection({1, 1, -1});
   rootEntity->addComponent(light);
-  
+
   return rootEntity;
 }
 
