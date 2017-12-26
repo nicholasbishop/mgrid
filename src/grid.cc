@@ -84,7 +84,6 @@ private:
   void createIndexData();
 
   Qt3DRender::QAttribute *m_positionAttribute;
-  Qt3DRender::QAttribute *m_normalAttribute;
   Qt3DRender::QAttribute *m_indexAttribute;
 
   Qt3DRender::QBuffer *m_vertexBuffer;
@@ -94,7 +93,6 @@ private:
 GridGeometry::GridGeometry(QNode *parent) : QGeometry(parent) {
 
   m_positionAttribute = new Qt3DRender::QAttribute(this);
-  m_normalAttribute = new Qt3DRender::QAttribute(this);
   m_indexAttribute = new Qt3DRender::QAttribute(this);
 
   m_vertexBuffer =
@@ -118,16 +116,6 @@ GridGeometry::GridGeometry(QNode *parent) : QGeometry(parent) {
   m_positionAttribute->setByteStride(stride);
   m_positionAttribute->setCount(nVerts);
 
-  m_normalAttribute->setName(
-      Qt3DRender::QAttribute::defaultNormalAttributeName());
-  m_normalAttribute->setDataType(Qt3DRender::QAttribute::Float);
-  m_normalAttribute->setDataSize(3);
-  m_normalAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
-  m_normalAttribute->setBuffer(m_vertexBuffer);
-  m_normalAttribute->setByteStride(stride);
-  m_normalAttribute->setByteOffset(3 * sizeof(float));
-  m_normalAttribute->setCount(nVerts);
-
   m_indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
   m_indexAttribute->setDataType(Qt3DRender::QAttribute::UnsignedShort);
   m_indexAttribute->setBuffer(m_indexBuffer);
@@ -138,7 +126,6 @@ GridGeometry::GridGeometry(QNode *parent) : QGeometry(parent) {
   createIndexData();
 
   addAttribute(m_positionAttribute);
-  addAttribute(m_normalAttribute);
   addAttribute(m_indexAttribute);
 }
 
