@@ -26,55 +26,44 @@ using Qt3DRender::QRenderPass;
 using Qt3DRender::QShaderProgram;
 using Qt3DRender::QTechnique;
 
-std::unique_ptr<QMaterial> create_grid_material() {
-  std::unique_ptr<QMaterial> material{new QMaterial()};
-
-  // Create effect, technique, render pass and shader
-  QEffect *effect = new QEffect();
-  QTechnique *technique = new QTechnique();
-  QRenderPass *pass = new QRenderPass();
-  QShaderProgram *prog = new QShaderProgram();
-
+GridMaterial::GridMaterial() {
   // Set the shader on the render pass
-  pass->setShaderProgram(prog);
-  prog->setVertexShaderCode(
+  pass_.setShaderProgram(&prog_);
+  prog_.setVertexShaderCode(
       QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_vert.glsl")));
-  prog->setTessellationControlShaderCode(
+  prog_.setTessellationControlShaderCode(
       QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_tess_ctrl.glsl")));
-  prog->setTessellationEvaluationShaderCode(
+  prog_.setTessellationEvaluationShaderCode(
       QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_tess_eval.glsl")));
-  prog->setGeometryShaderCode(
+  prog_.setGeometryShaderCode(
       QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_geom.glsl")));
-  prog->setFragmentShaderCode(
+  prog_.setFragmentShaderCode(
       QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_frag.glsl")));
 
   auto* cull = new QCullFace();
   cull->setMode(QCullFace::NoCulling);
-  pass->addRenderState(cull);
+  pass_.addRenderState(cull);
 
-  // Add the pass to the technique
-  technique->addRenderPass(pass);
+  technique_.addRenderPass(&pass_);
 
   auto* filter = new QFilterKey();
   filter->setName(QStringLiteral("renderingStyle"));
   filter->setValue(QStringLiteral("forward"));
 
-  technique->addFilterKey(filter);
+  technique_.addFilterKey(filter);
 
   // Set the targeted GL version for the technique
-  technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
-  technique->graphicsApiFilter()->setMajorVersion(4);
-  technique->graphicsApiFilter()->setMinorVersion(1);
-  technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
+  technique_.graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+  technique_.graphicsApiFilter()->setMajorVersion(4);
+  technique_.graphicsApiFilter()->setMinorVersion(1);
+  technique_.graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
 
-  effect->addTechnique(technique);
-  material->setEffect(effect);
+  effect_.addTechnique(&technique_);
+  setEffect(&effect_);
 
-  QObject::connect(prog, &QShaderProgram::logChanged, [prog]() {
-      qInfo() << prog->log();
+  connect(&prog_, &QShaderProgram::logChanged, [this]() {
+      qInfo() << prog_.log();
     });
-
-  return material;
 }
 
 class GridGeometry : public Qt3DRender::QGeometry {

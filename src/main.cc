@@ -74,7 +74,7 @@ Qt3DCore::QEntity *createScene() {
   auto* gridEntity = new QEntity(rootEntity);
   auto* gridRenderer = new GridRenderer();
   gridEntity->addComponent(gridRenderer);
-  auto* gridMaterial = create_grid_material().release();
+  auto* gridMaterial = new GridMaterial();
   gridEntity->addComponent(gridMaterial);
   //gridEntity->addComponent(material);
 
