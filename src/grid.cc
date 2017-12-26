@@ -81,30 +81,22 @@ public:
 
 private:
   void createVertexData();
-  void createIndexData();
 
   Qt3DRender::QAttribute *m_positionAttribute;
-  Qt3DRender::QAttribute *m_indexAttribute;
-
   Qt3DRender::QBuffer *m_vertexBuffer;
-  Qt3DRender::QBuffer *m_indexBuffer;
 };
 
 GridGeometry::GridGeometry(QNode *parent) : QGeometry(parent) {
 
   m_positionAttribute = new Qt3DRender::QAttribute(this);
-  m_indexAttribute = new Qt3DRender::QAttribute(this);
 
   m_vertexBuffer =
       new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, this);
-  m_indexBuffer =
-      new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer, this);
 
   // vec3 pos, vec3 normal
   const quint32 elementSize = 3 + 3;
   const quint32 stride = elementSize * sizeof(float);
   const int nVerts = 4;
-  const int faces = 2;
 
   m_positionAttribute->setName(
       Qt3DRender::QAttribute::defaultPositionAttributeName());
@@ -116,17 +108,9 @@ GridGeometry::GridGeometry(QNode *parent) : QGeometry(parent) {
   m_positionAttribute->setByteStride(stride);
   m_positionAttribute->setCount(nVerts);
 
-  m_indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
-  m_indexAttribute->setDataType(Qt3DRender::QAttribute::UnsignedShort);
-  m_indexAttribute->setBuffer(m_indexBuffer);
-
-  m_indexAttribute->setCount(faces * 3);
-
   createVertexData();
-  createIndexData();
 
   addAttribute(m_positionAttribute);
-  addAttribute(m_indexAttribute);
 }
 
 void GridGeometry::createVertexData() {
@@ -171,30 +155,10 @@ void GridGeometry::createVertexData() {
   m_vertexBuffer->setData(verticesData);
 }
 
-void GridGeometry::createIndexData() {
-  const int facesCount = 2;
-  const int indicesCount = facesCount * 3;
-  const int indexSize = sizeof(quint16);
-  Q_ASSERT(indicesCount < 65536);
-
-  QByteArray indicesBytes;
-  indicesBytes.resize(indicesCount * indexSize);
-  quint16 *i = reinterpret_cast<quint16 *>(indicesBytes.data());
-
-  i[0] = 0;
-  i[1] = 1;
-  i[2] = 2;
-
-  i[3] = 0;
-  i[4] = 2;
-  i[5] = 3;
-
-  m_indexBuffer->setData(indicesBytes);
-}
-
 GridRenderer::GridRenderer(Qt3DCore::QNode *parent)
     : QGeometryRenderer(parent) {
   setGeometry(new GridGeometry(this));
+  setPrimitiveType(LineLoop);
 }
 
 GridRenderer::~GridRenderer() {}
