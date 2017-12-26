@@ -14,12 +14,7 @@ public:
 
 private:
   void createVertexData();
-  void createSidesVertices(float *&verticesPtr);
-  void createDiscVertices(float *&verticesPtr, float yPosition);
   void createIndexData();
-  void createSidesIndices(quint16 *&indicesPtr);
-  void createDiscIndices(quint16 *&indicesPtr, int discCenterIndex,
-                         float yPosition);
 
   Qt3DRender::QAttribute *m_positionAttribute;
   Qt3DRender::QAttribute *m_normalAttribute;
@@ -85,117 +80,66 @@ GridGeometry::GridGeometry(QNode *parent) : QGeometry(parent) {
 }
 
 void GridGeometry::createVertexData() {
-  const int verticesCount = (m_slices + 1) * m_rings + 2 * (m_slices + 1) + 2;
+  const int verticesCount = 4;
   // vec3 pos, vec3 normal
   const quint32 vertexSize = (3 + 3) * sizeof(float);
 
   QByteArray verticesData;
   verticesData.resize(vertexSize * verticesCount);
-  float *verticesPtr = reinterpret_cast<float *>(verticesData.data());
+  float *f = reinterpret_cast<float *>(verticesData.data());
 
-  createSidesVertices(verticesPtr);
-  createDiscVertices(verticesPtr, -m_length * 0.5f);
-  createDiscVertices(verticesPtr, m_length * 0.5f);
+  const float size = 10;
+
+  f[0] = -size;
+  f[1] = -size;
+  f[2] = 0;
+  f[3] = 0;
+  f[4] = 0;
+  f[5] = 1;
+
+  f[6] = size;
+  f[7] = -size;
+  f[8] = 0;
+  f[9] = 0;
+  f[10] = 0;
+  f[11] = 1;
+
+  f[12] = size;
+  f[13] = size;
+  f[14] = 0;
+  f[15] = 0;
+  f[16] = 0;
+  f[17] = 1;
+
+  f[18] = -size;
+  f[19] = size;
+  f[20] = 0;
+  f[21] = 0;
+  f[22] = 0;
+  f[23] = 1;
 
   m_vertexBuffer->setData(verticesData);
 }
 
-void GridGeometry::createSidesVertices(float *&verticesPtr) {
-  const float dY = m_length / static_cast<float>(m_rings - 1);
-  const float dTheta = (M_PI * 2) / static_cast<float>(m_slices);
-
-  for (int ring = 0; ring < m_rings; ++ring) {
-    const float y = -m_length / 2.0f + static_cast<float>(ring) * dY;
-    for (int slice = 0; slice <= m_slices; ++slice) {
-      const float theta = static_cast<float>(slice) * dTheta;
-      *verticesPtr++ = m_radius * qCos(theta);
-      ;
-      *verticesPtr++ = y;
-      *verticesPtr++ = m_radius * qSin(theta);
-
-      QVector3D n(qCos(theta), -y * 0.5f, qSin(theta));
-      n.normalize();
-      *verticesPtr++ = n.x();
-      *verticesPtr++ = n.y();
-      *verticesPtr++ = n.z();
-    }
-  }
-}
-
-void GridGeometry::createDiscVertices(float *&verticesPtr, float yPosition) {
-  const float dTheta = (M_PI * 2) / static_cast<float>(m_slices);
-  const float yNormal = (yPosition < 0.0f) ? -1.0f : 1.0f;
-
-  *verticesPtr++ = 0.0f;
-  *verticesPtr++ = yPosition;
-  *verticesPtr++ = 0.0f;
-
-  *verticesPtr++ = 0.0f;
-  *verticesPtr++ = yNormal;
-  *verticesPtr++ = 0.0f;
-
-  for (int slice = 0; slice <= m_slices; ++slice) {
-    const float theta = static_cast<float>(slice) * dTheta;
-    *verticesPtr++ = m_radius * qCos(theta);
-    *verticesPtr++ = yPosition;
-    *verticesPtr++ = m_radius * qSin(theta);
-
-    *verticesPtr++ = 0.0f;
-    *verticesPtr++ = yNormal;
-    *verticesPtr++ = 0.0f;
-  }
-}
-
 void GridGeometry::createIndexData() {
-  const int facesCount =
-      (m_slices * 2) *
-          (m_rings - 1) // two tris per side, for each pair of adjacent rings
-      + m_slices * 2;   // two caps
+  const int facesCount = 2;
   const int indicesCount = facesCount * 3;
   const int indexSize = sizeof(quint16);
   Q_ASSERT(indicesCount < 65536);
 
   QByteArray indicesBytes;
   indicesBytes.resize(indicesCount * indexSize);
-  quint16 *indicesPtr = reinterpret_cast<quint16 *>(indicesBytes.data());
+  quint16 *i = reinterpret_cast<quint16 *>(indicesBytes.data());
 
-  createSidesIndices(indicesPtr);
-  createDiscIndices(indicesPtr, m_rings * (m_slices + 1), -m_length * 0.5);
-  createDiscIndices(indicesPtr, m_rings * (m_slices + 1) + m_slices + 2,
-                    m_length * 0.5);
+  i[0] = 0;
+  i[1] = 1;
+  i[2] = 2;
+
+  i[3] = 0;
+  i[4] = 2;
+  i[5] = 3;
 
   m_indexBuffer->setData(indicesBytes);
-}
-
-void GridGeometry::createSidesIndices(quint16 *&indicesPtr) {
-  for (auto ring = 0; ring < m_rings - 1; ++ring) {
-    const auto ringIndexStart = ring * (m_slices + 1);
-    const auto nextRingIndexStart = (ring + 1) * (m_slices + 1);
-
-    for (auto slice = 0; slice < m_slices; ++slice) {
-      const auto nextSlice = slice + 1;
-      *indicesPtr++ = (ringIndexStart + slice);
-      *indicesPtr++ = (nextRingIndexStart + slice);
-      *indicesPtr++ = (ringIndexStart + nextSlice);
-      *indicesPtr++ = (ringIndexStart + nextSlice);
-      *indicesPtr++ = (nextRingIndexStart + slice);
-      *indicesPtr++ = (nextRingIndexStart + nextSlice);
-    }
-  }
-}
-
-void GridGeometry::createDiscIndices(quint16 *&indicesPtr, int discCenterIndex,
-                                     float /*yPosition*/) {
-  // const auto yNormal = (yPosition < 0.0f) ? -1.0f : 1.0f;
-  for (auto slice = 0; slice < m_slices; ++slice) {
-    const auto nextSlice = slice + 1;
-    *indicesPtr++ = discCenterIndex;
-    *indicesPtr++ = (discCenterIndex + 1 + nextSlice);
-    *indicesPtr++ = (discCenterIndex + 1 + slice);
-
-    // if (yNormal < 0.0f)
-    //    qSwap(*(indicesPtr -1), *(indicesPtr - 2));
-  }
 }
 
 GridRenderer::GridRenderer(Qt3DCore::QNode *parent)
