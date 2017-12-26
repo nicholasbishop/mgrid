@@ -27,13 +27,7 @@ Qt3DCore::QEntity *createScene() {
   torusMesh->setRings(100);
   torusMesh->setSlices(20);
 
-  Qt3DCore::QTransform *torusTransform = new Qt3DCore::QTransform;
-  torusTransform->setScale3D(QVector3D(1.5, 1, 0.5));
-  torusTransform->setRotation(
-      QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 45.0f));
-
   torusEntity->addComponent(torusMesh);
-  torusEntity->addComponent(torusTransform);
   torusEntity->addComponent(material);
 
   return rootEntity;
