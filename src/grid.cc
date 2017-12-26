@@ -4,6 +4,7 @@
 
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QGraphicsApiFilter>
@@ -16,6 +17,7 @@
 #include <QVector3D>
 #include <qmath.h>
 
+using Qt3DRender::QCullFace;
 using Qt3DRender::QEffect;
 using Qt3DRender::QFilterKey;
 using Qt3DRender::QGraphicsApiFilter;
@@ -39,6 +41,10 @@ std::unique_ptr<QMaterial> create_grid_material() {
       QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_vert.glsl")));
   prog->setFragmentShaderCode(
       QShaderProgram::loadSource(QUrl("qrc:///shaders/grid_frag.glsl")));
+
+  auto* cull = new QCullFace();
+  cull->setMode(QCullFace::NoCulling);
+  pass->addRenderState(cull);
 
   // Add the pass to the technique
   technique->addRenderPass(pass);
