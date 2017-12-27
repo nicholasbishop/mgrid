@@ -1,8 +1,6 @@
-#include <cstdio>
-#include <cstdlib>
+#include <epoxy/gl.h>
 
 #include <GLFW/glfw3.h>
-#include <epoxy/gl.h>
 
 #include "common.hh"
 #include "linmath.h"
@@ -21,7 +19,7 @@ static const char *vertex_shader_text =
     "varying vec3 color;\n"
     "void main()\n"
     "{\n"
-    "    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
+    "    gl_Position = MVP*  vec4(vPos, 0.0, 1.0);\n"
     "    color = vCol;\n"
     "}\n";
 
@@ -42,20 +40,37 @@ static void key_callback(GLFWwindow *window, int key, int UNUSED(scancode),
     glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
-int main(void) {
-  GLFWwindow *window;
-  GLuint vertex_buffer, vertex_shader, fragment_shader, program;
-  GLint mvp_location, vpos_location, vcol_location;
+static void init_glfw() {
   glfwSetErrorCallback(error_callback);
   if (!glfwInit())
     exit(EXIT_FAILURE);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-  window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+}
+
+class GLVersion {
+public:
+  GLVersion(const int major, const int minor) : major(major), minor(minor) {}
+
+  const int major;
+  const int minor;
+};
+
+static GLFWwindow *create_window(const GLVersion &version) {
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, version.major);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, version.minor);
+  GLFWwindow *window = glfwCreateWindow(640, 480, "mgrid", NULL, NULL);
   if (!window) {
     glfwTerminate();
     exit(EXIT_FAILURE);
   }
+  return window;
+}
+
+int main(void) {
+  GLFWwindow *window;
+  GLuint vertex_buffer, vertex_shader, fragment_shader, program;
+  GLint mvp_location, vpos_location, vcol_location;
+  init_glfw();
+  window = create_window(GLVersion(2, 0));
   glfwSetKeyCallback(window, key_callback);
   glfwMakeContextCurrent(window);
   glfwSwapInterval(1);
