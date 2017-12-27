@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include "glm/vec2.hpp"
 #include "glm/vec3.hpp"
 
 #include "common.hh"
@@ -12,14 +13,23 @@ namespace mgrid {
 
 class Grid {
  public:
-  Grid(const ivec2& resolution);
+  Grid();
 
   ~Grid();
 
-  bool intersect_ray(const Ray& ray);
+  const ivec2& res() const { return res_; }
+
+  void make_random(const ivec2& res);
+
+  optional<vec4> intersect_ray(const Ray3& ray);
+
+  vec3* data() {
+    return points_.data();
+  }
 
  private:
   std::vector<vec3> points_;
+  ivec2 res_;
 };
 }
 

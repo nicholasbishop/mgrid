@@ -1,6 +1,8 @@
+#include "intersect_ray_triangle.hh"
+
 #include "glm/glm.hpp"
 
-#include "intersect_ray_triangle.hh"
+#include "ray.hh"
 
 namespace mgrid {
 
@@ -43,7 +45,7 @@ float xorf(const float f, const uint32_t mask) {
 }
 
 // Adapted from http://jcgt.org/published/0002/01/05/paper.pdf
-optional<vec4> intersect_ray_triangle(const Ray& ray, const Triangle& tri) {
+optional<vec4> intersect_ray_triangle(const Ray3& ray, const Triangle& tri) {
   // TODO(nicholasbishop): move the precalculation out */
 
   /* calculate dimension where the is maximal */

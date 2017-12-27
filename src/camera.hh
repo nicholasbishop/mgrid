@@ -6,6 +6,7 @@
 
 #include "angle.hh"
 #include "common.hh"
+#include "ray.hh"
 
 namespace mgrid {
 
@@ -23,6 +24,9 @@ class Camera {
   Angle height_angle() const;
   Angle around_angle() const;
   float distance() const;
+
+  vec3 unproject(const vec3& win) const;
+  Ray3 ray(const vec2& win) const;
 
   void set_target(vec3);
   void set_height_angle(Angle);

@@ -34,6 +34,19 @@ Angle Camera::around_angle() const {
   return around_angle_;
 }
 
+vec3 Camera::unproject(const vec3& win) const {
+  vec4 viewport{0, 0, size_.x, size_.y};
+  return glm::unProject(win, view_matrix_, projection_matrix_, viewport);
+}
+
+Ray3 Camera::ray(const vec2& win) const {
+  vec3 win_origin{win.x, win.y, 0};
+  vec3 win_target{win.x, win.y, 1};
+  const auto origin = unproject(win_origin);
+  const auto target = unproject(win_target);
+  return Ray3{origin, glm::normalize(target - origin)};
+}
+
 void Camera::set_height_angle(const Angle angle) {
   height_angle_ = angle;
   update();

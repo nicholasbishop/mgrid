@@ -7,18 +7,14 @@
 
 namespace mgrid {
 
-class Ray {
- public:
-  const vec3 origin;
-  const vec3 direction;
-};
+class Ray3;
 
 class Triangle {
  public:
   vec3 A, B, C;
 };
 
-optional<vec4> intersect_ray_triangle(const Ray& ray, const Triangle& tri);
+optional<vec4> intersect_ray_triangle(const Ray3& ray, const Triangle& tri);
 }
 
 #endif  // SRC_INTERSECT_RAY_TRIANGLE_HH_

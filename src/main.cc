@@ -10,6 +10,7 @@
 #include "camera.hh"
 #include "common.hh"
 #include "errors.hh"
+#include "grid.hh"
 #include "shader.hh"
 #include "texture.hh"
 #include "window.hh"
@@ -29,7 +30,11 @@ class App : public Window {
   App() : Window(GLVersion(4, 0)) {}
 
  private:
-  bool over_mesh(const dvec2& pos) { return false; }
+  bool over_mesh(const dvec2& pos) {
+    const auto ray = camera_.ray(pos);
+    const auto hit = grid_.intersect_ray(ray);
+    return !!hit;
+  }
 
   void on_cursor_position_event(const CursorPositionEvent& event) final {
     if (in_left_drag_) {
@@ -110,23 +115,12 @@ class App : public Window {
     glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE, stride,
                           nullptr);
 
-    const int tw = 64;
-    const float hw = tw / 2.0f;
-    const int th = 64;
-    const float hh = th / 2.0f;
-    std::vector<vec3> texdata;
-    texdata.resize(tw * th);
-    for (int y = 0; y < th; y++) {
-      for (int x = 0; x < tw; x++) {
-        texdata[y * tw + x].x = x / hw - 1;
-        texdata[y * tw + x].y = y / hh - 1;
-        texdata[y * tw + x].z = ((rand() % 128) - 64) / 1024.0f;
-      }
-    }
+    grid_.make_random({4, 4});
+
     grid_texture_ = Texture(GL_TEXTURE_2D);
     grid_texture_->bind();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, tw, th, 0, GL_RGB, GL_FLOAT,
-                 texdata.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, grid_.res().x, grid_.res().y,
+                 0, GL_RGB, GL_FLOAT, grid_.data());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -163,6 +157,7 @@ class App : public Window {
   Camera camera_;
   bool in_left_drag_ = false;
   vec2 left_drag_start_;
+  Grid grid_;
 };
 
 int main(void) {

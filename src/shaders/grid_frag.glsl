@@ -5,7 +5,7 @@ in vec3 gFacetNormal;
 in vec3 gTriDistance;
 in vec4 gPatchDistance;
 
-const vec3 InnerLineColor = vec3(1, 1, 0);
+const vec3 InnerLineColor = vec3(0.5, 0.5, 0);
 const bool DrawLines = true;
 
 float amplify(float d, float scale, float offset)
