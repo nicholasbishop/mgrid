@@ -31,9 +31,9 @@ uint32_t sign_mask(const float val) {
 
 float xorf(const float f, const uint32_t mask) {
   float ret = 0;
-  const auto *src1 = reinterpret_cast<const uint8_t *>(&f);
-  const auto *src2 = reinterpret_cast<const uint8_t *>(&mask);
-  auto *dst = reinterpret_cast<uint8_t *>(&ret);
+  const auto* src1 = reinterpret_cast<const uint8_t*>(&f);
+  const auto* src2 = reinterpret_cast<const uint8_t*>(&mask);
+  auto* dst = reinterpret_cast<uint8_t*>(&ret);
 
   for (int i = 0; i < 4; i++) {
     dst[i] = src1[0] ^ src2[0];

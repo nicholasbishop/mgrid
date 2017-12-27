@@ -19,7 +19,6 @@ class Triangle {
 };
 
 optional<vec4> intersect_ray_triangle(const Ray& ray, const Triangle& tri);
-
 }
 
 #endif  // SRC_INTERSECT_RAY_TRIANGLE_HH_
