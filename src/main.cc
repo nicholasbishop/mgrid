@@ -29,9 +29,7 @@ class App : public Window {
   App() : Window(GLVersion(4, 0)) {}
 
  private:
-  bool over_mesh(const dvec2& pos) {
-    return false;
-  }
+  bool over_mesh(const dvec2& pos) { return false; }
 
   void on_cursor_position_event(const CursorPositionEvent& event) final {
     if (in_left_drag_) {

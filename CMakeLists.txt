@@ -25,6 +25,8 @@ add_executable(mgrid
   src/camera.cc
   src/errors.cc
   src/events.cc
+  src/grid.cc
+  src/intersect_ray_triangle.cc
   src/main.cc
   src/shader.cc
   src/texture.cc
