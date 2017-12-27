@@ -1,29 +1,21 @@
+#include <fstream>
+#include <sstream>
+
 #include <epoxy/gl.h>
 
 #include "camera.hh"
 #include "common.hh"
+#include "shader.hh"
 #include "window.hh"
 
 using namespace mgrid;
 
-static const char *vertex_shader_text =
-    "uniform mat4 MVP;\n"
-    "attribute vec3 vCol;\n"
-    "attribute vec2 vPos;\n"
-    "varying vec3 color;\n"
-    "void main()\n"
-    "{\n"
-    "    gl_Position = MVP*  vec4(vPos, 0.0, 1.0);\n"
-    "    color = vCol;\n"
-    "}\n";
-
-static const char *fragment_shader_text =
-    "varying vec3 color;\n"
-    "void main()\n"
-    "{\n"
-    "    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
-    "}\n";
-
+std::string read_entire_file(const std::string& path) {
+  std::ifstream in(path);
+  auto ss = std::ostringstream{};
+  ss << in.rdbuf();
+  return ss.str();
+}
 
 class App : public Window {
  public:
@@ -58,16 +50,17 @@ class App : public Window {
       {-1.0f,  1.0f},
     };
 
+    const auto vs = read_entire_file("../src/shaders/basic.vert.glsl");
+    const auto fs = read_entire_file("../src/shaders/basic.frag.glsl");
+
     // NOTE: OpenGL error checks have been omitted for brevity
     glGenBuffers(1, &vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &vertex_shader_text, NULL);
-    glCompileShader(vertex_shader);
-    fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &fragment_shader_text, NULL);
-    glCompileShader(fragment_shader);
+
+    vertex_shader = compile_shader(GL_VERTEX_SHADER, vs);
+    fragment_shader = compile_shader(GL_FRAGMENT_SHADER, fs);
+
     program = glCreateProgram();
     glAttachShader(program, vertex_shader);
     glAttachShader(program, fragment_shader);
