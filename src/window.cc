@@ -19,8 +19,10 @@ void gl_debug_callback(GLenum source,
                        GLenum severity,
                        GLsizei length,
                        const GLchar* message,
-                       const void* userParam) {
-  std::cerr << source << ":" << message << std::endl;
+                       const void* UNUSED(userParam)) {
+  const std::string msg{message, message + length};
+  std::cerr << source << ":" << type << ":" << id << ":" << severity << ":"
+            << msg << std::endl;
 }
 
 void init_glfw() {
@@ -48,6 +50,8 @@ namespace mgrid {
 GLVersion::GLVersion(const int major, const int minor)
     : major(major), minor(minor) {}
 
+CursorPositionEvent::CursorPositionEvent(const vec2& pos) : pos(pos) {}
+
 KeyEvent::KeyEvent(const int key, const int scancode, const int action,
                    const int mods)
     : key(key), scancode(scancode), action(action), mods(mods) {}
@@ -66,12 +70,18 @@ bool KeyEvent::isRightArrow() const { return key == GLFW_KEY_RIGHT; }
 
 bool KeyEvent::isUpArrow() const { return key == GLFW_KEY_UP; }
 
+MouseButtonEvent::MouseButtonEvent(const int button, const int action,
+                                   const int mods)
+    : button(button), action(action), mods(mods) {}
+
 Size2i::Size2i(const int width, const int height)
     : width(width), height(height) {}
 
 Window::Window(const GLVersion &version) : wnd_(create_window(version)) {
   glfwSetWindowUserPointer(wnd_, this);
   glfwSetKeyCallback(wnd_, &Window::key_callback);
+  glfwSetCursorPosCallback(wnd_, &Window::cursor_pos_callback);
+  glfwSetMouseButtonCallback(wnd_, &Window::mouse_button_callback);
 
   glfwMakeContextCurrent(wnd_);
   glfwSwapInterval(1);
@@ -113,13 +123,35 @@ float Window::aspect_ratio() const {
   return static_cast<float>(size.width) / static_cast<float>(size.height);
 }
 
+void Window::on_cursor_position_event(const CursorPositionEvent &) {}
+
 void Window::on_key_event(const KeyEvent &) {}
+
+void Window::on_mouse_button_event(const MouseButtonEvent &) {}
+
+void Window::cursor_pos_callback(GLFWwindow *const wnd,
+                                 const double xpos, const double ypos) {
+  Window *window = from_user_pointer(wnd);
+  CursorPositionEvent event{vec2{xpos, ypos}};
+  window->on_cursor_position_event(event);
+}
 
 void Window::key_callback(GLFWwindow *wnd, const int key, const int scancode,
                           const int action, const int mods) {
-  Window *window = static_cast<Window *>(glfwGetWindowUserPointer(wnd));
+  Window *window = from_user_pointer(wnd);
   KeyEvent event{key, scancode, action, mods};
   window->on_key_event(event);
+}
+
+void Window::mouse_button_callback(GLFWwindow *const wnd, const int button,
+                                  const int action, const int mods) {
+  Window *window = from_user_pointer(wnd);
+  MouseButtonEvent event{button, action, mods};
+  window->on_mouse_button_event(event);
+}
+
+Window *Window::from_user_pointer(GLFWwindow* const wnd) {
+  return static_cast<Window *>(glfwGetWindowUserPointer(wnd));
 }
 
 } // namespace mgrid

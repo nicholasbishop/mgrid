@@ -1,6 +1,8 @@
 #ifndef SRC_WINDOW_HH_
 #define SRC_WINDOW_HH_
 
+#include "glm/vec2.hpp"
+
 #include "common.hh"
 
 struct GLFWwindow;
@@ -13,6 +15,13 @@ public:
 
   const int major;
   const int minor;
+};
+
+class CursorPositionEvent {
+ public:
+  CursorPositionEvent(const vec2& pos);
+
+  const vec2 pos;
 };
 
 class KeyEvent {
@@ -30,6 +39,15 @@ public:
 
   const int key;
   const int scancode;
+  const int action;
+  const int mods;
+};
+
+class MouseButtonEvent {
+ public:
+  MouseButtonEvent(const int button, const int action, const int mods);
+
+  const int button;
   const int action;
   const int mods;
 };
@@ -55,7 +73,9 @@ public:
   float aspect_ratio() const;
 
 private:
+  virtual void on_cursor_position_event(const CursorPositionEvent &event);
   virtual void on_key_event(const KeyEvent &event);
+  virtual void on_mouse_button_event(const MouseButtonEvent &event);
 
   virtual void initialize() = 0;
 
@@ -63,9 +83,17 @@ private:
 
   virtual void clean_up() = 0;
 
-  static void key_callback(GLFWwindow *window, const int key,
+  static void cursor_pos_callback(GLFWwindow *const window,
+                                  const double xpos, const double ypos);
+
+  static void key_callback(GLFWwindow *const window, const int key,
                            const int scancode, const int action,
                            const int mode);
+
+  static void mouse_button_callback(GLFWwindow *const window, const int button,
+                                    const int action, const int mods);
+
+  static Window *from_user_pointer(GLFWwindow* const window);
 
   GLFWwindow *wnd_;
   bool is_initialized_ = false;
