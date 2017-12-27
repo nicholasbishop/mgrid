@@ -1,5 +1,6 @@
 #include <GLFW/glfw3.h>
 
+#include "errors.hh"
 #include "window.hh"
 
 namespace {
@@ -81,10 +82,14 @@ void Window::close() {
 }
 
 void Window::start() {
+  check_gl_error("pre-initialize");
   initialize();
+  check_gl_error("post-initialize");
 
   while (!glfwWindowShouldClose(wnd_)) {
+    check_gl_error("pre-render");
     render();
+    check_gl_error("post-render");
 
     glfwSwapBuffers(wnd_);
     glfwWaitEvents();

@@ -117,7 +117,10 @@ void ShaderProgram::link() {
   tess_ctrl_->attach(handle_);
   tess_eval_->attach(handle_);
   vert_->attach(handle_);
+
+  check_gl_error("pre-link");
   glLinkProgram(handle_);
+  check_gl_error("post-link");
 }
 
 GLint ShaderProgram::uniform_location(const std::string& name) {
@@ -131,7 +134,7 @@ GLint ShaderProgram::uniform_location(const std::string& name) {
 GLint ShaderProgram::attribute_location(const std::string& name) {
   const auto loc = glGetAttribLocation(handle_, name.c_str());
   if (loc == -1) {
-    throw ShaderError("glGetUniformLocation failed");
+    throw ShaderError("glGetAttribLocation failed");
   }
   return loc;
 }

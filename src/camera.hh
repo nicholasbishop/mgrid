@@ -38,7 +38,7 @@ class Camera {
   vec3 target_;
   Angle height_angle_ = Angle::from_degrees(80);
   Angle around_angle_ = Angle::from_degrees(80);
-  float distance_ = 2;
+  float distance_ = 4;
 
   int width_ = 1;
   int height_ = 1;

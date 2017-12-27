@@ -15,12 +15,15 @@ using namespace mgrid;
 
 std::string read_resource_string(const std::string& path) {
   auto r = cmrc::open(path);
+  if (!r.begin()) {
+    throw std::runtime_error("invalid resource: " + path);
+  }
   return {r.begin(), r.end()};
 }
 
 class App : public Window {
  public:
-  App() : Window(GLVersion(2, 0)) {}
+  App() : Window(GLVersion(4, 0)) {}
 
  private:
   void on_key_event(const KeyEvent& event) final {
@@ -51,8 +54,14 @@ class App : public Window {
       {-1.0f,  1.0f},
     };
 
-    const auto vs = read_resource_string("src/shaders/basic.vert.glsl");
-    const auto fs = read_resource_string("src/shaders/basic.frag.glsl");
+    const auto vs = read_resource_string("src/shaders/grid_vert.glsl");
+    const auto fs = read_resource_string("src/shaders/grid_frag.glsl");
+    const auto gs = read_resource_string("src/shaders/grid_geom.glsl");
+    const auto tcs = read_resource_string("src/shaders/grid_tess_ctrl.glsl");
+    const auto tes = read_resource_string("src/shaders/grid_tess_eval.glsl");
+
+    glGenVertexArrays(1, &vao_);
+    glBindVertexArray(vao_);
 
     // NOTE: OpenGL error checks have been omitted for brevity
     glGenBuffers(1, &vertex_buffer);
@@ -62,14 +71,20 @@ class App : public Window {
     program_ = ShaderProgram();
     program_->create_vert_shader(vs);
     program_->create_frag_shader(fs);
+    program_->create_geom_shader(gs);
+    program_->create_tess_ctrl_shader(tcs);
+    program_->create_tess_eval_shader(tes);
+
     program_->link();
 
-    mvp_location = program_->uniform_location("MVP");
-    vpos_location = program_->attribute_location("vPos");
+    mvp_location = program_->uniform_location("modelViewProjection");
+    vpos_location = program_->attribute_location("vertexPosition");
     glEnableVertexAttribArray(vpos_location);
+    check_gl_error("a");
     const int stride = 0;
     glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE, stride,
-                          (void *)0);
+                          nullptr);
+    check_gl_error("b");
   }
 
   void render() final {
@@ -80,7 +95,8 @@ class App : public Window {
     const auto mvp = camera_.view_projection_matrix();
     program_->bind();
     glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &mvp[0][0]);
-    glDrawArrays(GL_LINE_LOOP, 0, 4);
+    glPatchParameteri(GL_PATCH_VERTICES, 4);
+    glDrawArrays(GL_PATCHES, 0, 4);
   }
 
   void clean_up() {
@@ -88,6 +104,7 @@ class App : public Window {
   }
 
   optional<ShaderProgram> program_;
+  GLuint vao_;
   GLuint vertex_buffer;
   GLint mvp_location, vpos_location;
   Camera camera_;

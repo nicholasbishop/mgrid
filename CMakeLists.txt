@@ -14,8 +14,12 @@ add_compile_options(-Wall -Wextra)
 include_directories(. glm)
 
 cmrc_add_resource_library(resources
-  src/shaders/basic.vert.glsl
-  src/shaders/basic.frag.glsl)
+  src/shaders/grid_frag.glsl
+  src/shaders/grid_geom.glsl
+  src/shaders/grid_tess_ctrl.glsl
+  src/shaders/grid_tess_eval.glsl
+  src/shaders/grid_vert.glsl
+  )
 
 add_executable(mgrid
   src/angle.cc
