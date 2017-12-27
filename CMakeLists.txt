@@ -18,13 +18,13 @@ cmrc_add_resource_library(resources
   src/shaders/grid_geom.glsl
   src/shaders/grid_tess_ctrl.glsl
   src/shaders/grid_tess_eval.glsl
-  src/shaders/grid_vert.glsl
-  )
+  src/shaders/grid_vert.glsl)
 
 add_executable(mgrid
   src/angle.cc
   src/camera.cc
   src/errors.cc
+  src/events.cc
   src/main.cc
   src/shader.cc
   src/texture.cc
