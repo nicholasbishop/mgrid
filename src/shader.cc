@@ -1,15 +1,27 @@
 #include "shader.hh"
 
 #include <iostream>
+#include <stdexcept>
 #include <string>
+
+#include "errors.hh"
 
 namespace mgrid {
 
-GLuint compile_shader(const GLenum kind, const std::string& contents) {
+class ShaderError : public std::runtime_error {
+ public:
+  ShaderError(const std::string& what) : runtime_error(what) {}
+};
+
+Shader Shader::create(const GLenum kind, const std::string& contents) {
   const char* c_str = contents.c_str();
   const int count = 1;
 
   const auto shader = glCreateShader(kind);
+  if (!shader) {
+    throw ShaderError("glCreateShader failed");
+  }
+
   glShaderSource(shader, count, &c_str, NULL);
   glCompileShader(shader);
 
@@ -22,7 +34,110 @@ GLuint compile_shader(const GLenum kind, const std::string& contents) {
 
   std::cout << log << std::endl;
 
-  return shader;
+  return Shader{kind, shader};
+}
+
+Shader::Shader(Shader&& other) {
+  std::swap(handle_, other.handle_);
+}
+
+Shader::Shader(GLenum kind, GLuint handle) : kind_(kind), handle_(handle) {
+  if (!handle_) {
+    throw ShaderError("Shader: invalid handle");
+  }
+}
+
+Shader::~Shader() {
+  glDeleteShader(handle_);
+}
+
+Shader& Shader::operator=(Shader&& other) {
+  std::swap(handle_, other.handle_);
+  return *this;
+}
+
+void Shader::attach(GLuint program) {
+  if (handle_) {
+    glAttachShader(program, handle_);
+  }
+}
+
+ShaderProgram::ShaderProgram() : handle_(glCreateProgram()) {
+  if (!handle_) {
+    throw ShaderError("ShaderProgram: invalid handle");
+  }
+}
+
+ShaderProgram::ShaderProgram(ShaderProgram&& other) {
+  std::swap(handle_, other.handle_);
+  std::swap(frag_, other.frag_);
+  std::swap(geom_, other.geom_);
+  std::swap(tess_ctrl_, other.tess_ctrl_);
+  std::swap(tess_eval_, other.tess_eval_);
+  std::swap(vert_, other.vert_);
+}
+
+ShaderProgram::~ShaderProgram() {
+  glDeleteProgram(handle_);
+}
+
+ShaderProgram& ShaderProgram::operator=(ShaderProgram&& other) {
+  std::swap(handle_, other.handle_);
+  std::swap(frag_, other.frag_);
+  std::swap(geom_, other.geom_);
+  std::swap(tess_ctrl_, other.tess_ctrl_);
+  std::swap(tess_eval_, other.tess_eval_);
+  std::swap(vert_, other.vert_);
+  return *this;
+}
+
+void ShaderProgram::create_frag_shader(const std::string& code) {
+  frag_ = std::move(Shader::create(GL_FRAGMENT_SHADER, code));
+}
+
+void ShaderProgram::create_geom_shader(const std::string& code) {
+  geom_ = Shader::create(GL_GEOMETRY_SHADER, code);
+}
+
+void ShaderProgram::create_tess_ctrl_shader(const std::string& code) {
+  tess_ctrl_ = Shader::create(GL_TESS_CONTROL_SHADER, code);
+}
+
+void ShaderProgram::create_tess_eval_shader(const std::string& code) {
+  tess_eval_ = Shader::create(GL_TESS_EVALUATION_SHADER, code);
+}
+
+void ShaderProgram::create_vert_shader(const std::string& code) {
+  vert_ = Shader::create(GL_VERTEX_SHADER, code);
+}
+
+void ShaderProgram::link() {
+  frag_->attach(handle_);
+  geom_->attach(handle_);
+  tess_ctrl_->attach(handle_);
+  tess_eval_->attach(handle_);
+  vert_->attach(handle_);
+  glLinkProgram(handle_);
+}
+
+GLint ShaderProgram::uniform_location(const std::string& name) {
+  const auto loc = glGetUniformLocation(handle_, name.c_str());
+  if (loc == -1) {
+    throw ShaderError("glGetUniformLocation failed");
+  }
+  return loc;
+}
+
+GLint ShaderProgram::attribute_location(const std::string& name) {
+  const auto loc = glGetAttribLocation(handle_, name.c_str());
+  if (loc == -1) {
+    throw ShaderError("glGetUniformLocation failed");
+  }
+  return loc;
+}
+
+void ShaderProgram::bind() {
+  glUseProgram(handle_);
 }
 
 }

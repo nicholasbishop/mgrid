@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(mgrid)
 
+set(CMAKE_CXX_STANDARD 14)
+
 find_package(PkgConfig REQUIRED)
 find_package(glfw3 3.2 REQUIRED)
 pkg_check_modules(LIBEPOXY epoxy REQUIRED)
@@ -12,6 +14,7 @@ include_directories(. glm)
 add_executable(mgrid
   src/angle.cc
   src/camera.cc
+  src/errors.cc
   src/main.cc
   src/shader.cc
   src/window.cc)

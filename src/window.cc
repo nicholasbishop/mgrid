@@ -89,6 +89,9 @@ void Window::start() {
     glfwSwapBuffers(wnd_);
     glfwWaitEvents();
   }
+
+  clean_up();
+
   glfwDestroyWindow(wnd_);
   glfwTerminate();
 

@@ -62,6 +62,8 @@ class Window {
 
   virtual void render() = 0;
 
+  virtual void clean_up() = 0;
+
   static void key_callback(GLFWwindow* window, const int key,
                            const int scancode, const int action,
                            const int mode);

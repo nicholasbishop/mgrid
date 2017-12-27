@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <string>
 
+#include <experimental/optional>
+
 #include "glm/fwd.hpp"
 
 #ifdef __GNUC__
@@ -24,5 +26,8 @@
 using glm::vec2;
 using glm::vec3;
 using glm::mat4;
+
+using std::experimental::optional;
+using std::experimental::nullopt;
 
 #endif  // SRC_COMMON_HH_

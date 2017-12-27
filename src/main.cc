@@ -5,6 +5,7 @@
 
 #include "camera.hh"
 #include "common.hh"
+#include "errors.hh"
 #include "shader.hh"
 #include "window.hh"
 
@@ -58,15 +59,13 @@ class App : public Window {
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    vertex_shader = compile_shader(GL_VERTEX_SHADER, vs);
-    fragment_shader = compile_shader(GL_FRAGMENT_SHADER, fs);
+    program_ = ShaderProgram();
+    program_->create_vert_shader(vs);
+    program_->create_frag_shader(fs);
+    program_->link();
 
-    program = glCreateProgram();
-    glAttachShader(program, vertex_shader);
-    glAttachShader(program, fragment_shader);
-    glLinkProgram(program);
-    mvp_location = glGetUniformLocation(program, "MVP");
-    vpos_location = glGetAttribLocation(program, "vPos");
+    mvp_location = program_->uniform_location("MVP");
+    vpos_location = program_->attribute_location("vPos");
     glEnableVertexAttribArray(vpos_location);
     const int stride = 0;
     glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE, stride,
@@ -79,12 +78,17 @@ class App : public Window {
     glViewport(0, 0, size.width, size.height);
     glClear(GL_COLOR_BUFFER_BIT);
     const auto mvp = camera_.view_projection_matrix();
-    glUseProgram(program);
+    program_->bind();
     glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &mvp[0][0]);
     glDrawArrays(GL_LINE_LOOP, 0, 4);
   }
 
-  GLuint vertex_buffer, vertex_shader, fragment_shader, program;
+  void clean_up() {
+    program_ = nullopt;
+  }
+
+  optional<ShaderProgram> program_;
+  GLuint vertex_buffer;
   GLint mvp_location, vpos_location;
   Camera camera_;
 };
