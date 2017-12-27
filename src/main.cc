@@ -107,13 +107,9 @@ private:
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     const auto tex_location = program_->uniform_location("gridTex");
-    check_gl_error("a");
     glUniform1i(tex_location, 0);
-    check_gl_error("b");
     glActiveTexture(GL_TEXTURE0 + 0);
-    check_gl_error("c");
     grid_texture_->bind();
-    check_gl_error("d");
   }
 
   void render() final {
