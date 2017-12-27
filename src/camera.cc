@@ -34,14 +34,6 @@ Angle Camera::around_angle() const {
   return around_angle_;
 }
 
-float Camera::aspect_ratio() const {
-  if (height_ == 0) {
-    return 1.0f;
-  } else {
-    return static_cast<float>(width_) / static_cast<float>(height_);
-  }
-}
-
 void Camera::set_height_angle(const Angle angle) {
   height_angle_ = angle;
   update();
@@ -52,9 +44,8 @@ void Camera::set_around_angle(const Angle angle) {
   update();
 }
 
-void Camera::set_size(const int width, const int height) {
-  width_ = width;
-  height_ = height;
+void Camera::set_size(const ivec2& size) {
+  size_ = size;
   update();
 }
 
@@ -70,7 +61,7 @@ void Camera::update() {
   const float near = 0.1f;
   const float far = 100.0f;
   projection_matrix_ =
-      glm::perspectiveFov<float>(fovy.in_radians(), width_, height_, near, far);
+      glm::perspectiveFov<float>(fovy.in_radians(), size_.x, size_.y, near, far);
   view_projection_matrix_ = projection_matrix_ * view_matrix_;
 }
 }

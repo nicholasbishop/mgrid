@@ -116,8 +116,8 @@ class App : public Window {
 
   void render() final {
     const auto size = framebuffer_size();
-    camera_.set_size(size.width, size.height);
-    glViewport(0, 0, size.width, size.height);
+    camera_.set_size(size);
+    glViewport(0, 0, size.x, size.y);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     const auto mvp = camera_.view_projection_matrix();
     program_->bind();

@@ -52,14 +52,6 @@ class MouseButtonEvent {
   const int mods;
 };
 
-class Size2i {
- public:
-  Size2i(const int width, const int height);
-
-  const int width;
-  const int height;
-};
-
 class Window {
  public:
   Window(const GLVersion& version);
@@ -68,9 +60,7 @@ class Window {
 
   void start();
 
-  Size2i framebuffer_size() const;
-
-  float aspect_ratio() const;
+  ivec2 framebuffer_size() const;
 
  private:
   virtual void on_cursor_position_event(const CursorPositionEvent& event);

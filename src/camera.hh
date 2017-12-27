@@ -23,14 +23,13 @@ class Camera {
   Angle height_angle() const;
   Angle around_angle() const;
   float distance() const;
-  float aspect_ratio() const;
 
   void set_target(vec3);
   void set_height_angle(Angle);
   void set_around_angle(Angle);
   void set_distance(float);
 
-  void set_size(int width, int height);
+  void set_size(const ivec2& size);
 
  private:
   void update();
@@ -40,8 +39,7 @@ class Camera {
   Angle around_angle_ = Angle::from_degrees(80);
   float distance_ = 2;
 
-  int width_ = 1;
-  int height_ = 1;
+  ivec2 size_ = {1, 1};
 
   vec3 position_;
   mat4 view_matrix_;

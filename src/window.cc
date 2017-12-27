@@ -87,9 +87,6 @@ MouseButtonEvent::MouseButtonEvent(const int button,
                                    const int mods)
     : button(button), action(action), mods(mods) {}
 
-Size2i::Size2i(const int width, const int height)
-    : width(width), height(height) {}
-
 Window::Window(const GLVersion& version) : wnd_(create_window(version)) {
   glfwSetWindowUserPointer(wnd_, this);
   glfwSetKeyCallback(wnd_, &Window::key_callback);
@@ -126,16 +123,11 @@ void Window::start() {
   glfwTerminate();
 }
 
-Size2i Window::framebuffer_size() const {
+ivec2 Window::framebuffer_size() const {
   int width = 0;
   int height = 0;
   glfwGetFramebufferSize(wnd_, &width, &height);
   return {width, height};
-}
-
-float Window::aspect_ratio() const {
-  const auto size = framebuffer_size();
-  return static_cast<float>(size.width) / static_cast<float>(size.height);
 }
 
 void Window::on_cursor_position_event(const CursorPositionEvent&) {}
