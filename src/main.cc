@@ -94,7 +94,7 @@ private:
       for (int x = 0; x < tw; x++) {
         texdata[y * tw + x].x = 0;
         texdata[y * tw + x].y = 0;
-        texdata[y * tw + x].z = ((rand() % 128) - 64) / 256.0f;
+        texdata[y * tw + x].z = ((rand() % 128) - 64) / 1024.0f;
       }
     }
     grid_texture_ = Texture(GL_TEXTURE_2D);
