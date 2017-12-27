@@ -60,8 +60,8 @@ void Camera::update() {
   const auto fovy = Angle::from_degrees(70);
   const float near = 0.1f;
   const float far = 100.0f;
-  projection_matrix_ =
-      glm::perspectiveFov<float>(fovy.in_radians(), size_.x, size_.y, near, far);
+  projection_matrix_ = glm::perspectiveFov<float>(fovy.in_radians(), size_.x,
+                                                  size_.y, near, far);
   view_projection_matrix_ = projection_matrix_ * view_matrix_;
 }
 }

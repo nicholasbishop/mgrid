@@ -35,7 +35,9 @@ class KeyEvent {
 
 class MouseButtonEvent {
  public:
-  MouseButtonEvent(const int button, const int action, const int mods,
+  MouseButtonEvent(const int button,
+                   const int action,
+                   const int mods,
                    const dvec2& pos);
 
   bool isLeftButton() const;
@@ -46,7 +48,6 @@ class MouseButtonEvent {
   const int mods;
   const dvec2 pos;
 };
-
 }
 
 #endif  // SRC_EVENTS_HH_
