@@ -10,9 +10,9 @@
 #include "glm/fwd.hpp"
 
 #ifdef __GNUC__
-#  define UNUSED(x) UNUSED_ ## x __attribute__((__unused__))
+#define UNUSED(x) UNUSED_##x __attribute__((__unused__))
 #else
-#  define UNUSED(x) UNUSED_ ## x
+#define UNUSED(x) UNUSED_##x
 #endif
 
 #ifdef major
@@ -30,4 +30,4 @@ using glm::mat4;
 using std::experimental::optional;
 using std::experimental::nullopt;
 
-#endif  // SRC_COMMON_HH_
+#endif // SRC_COMMON_HH_

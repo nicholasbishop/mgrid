@@ -6,7 +6,7 @@
 namespace mgrid {
 
 class Angle {
- public:
+public:
   static Angle from_degrees(const float value);
 
   static Angle from_radians(const float value);
@@ -15,15 +15,14 @@ class Angle {
 
   float in_radians() const;
 
-  Angle operator+(const Angle& other) const;
-  Angle operator-(const Angle& other) const;
+  Angle operator+(const Angle &other) const;
+  Angle operator-(const Angle &other) const;
 
- private:
+private:
   Angle(const float radians);
 
   float radians_ = 0;
 };
-
 }
 
-#endif  // SRC_ANGLE_HH_
+#endif // SRC_ANGLE_HH_

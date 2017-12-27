@@ -1,8 +1,8 @@
 #ifndef SRC_CAMERA_HH_
 #define SRC_CAMERA_HH_
 
-#include "glm/vec3.hpp"
 #include "glm/mat4x4.hpp"
+#include "glm/vec3.hpp"
 
 #include "angle.hh"
 #include "common.hh"
@@ -10,11 +10,11 @@
 namespace mgrid {
 
 class Camera {
- public:
+public:
   Camera();
 
   vec3 position() const;
-  
+
   mat4 view_matrix() const;
   mat4 projection_matrix() const;
   mat4 view_projection_matrix() const;
@@ -32,7 +32,7 @@ class Camera {
 
   void set_size(int width, int height);
 
- private:
+private:
   void update();
 
   vec3 target_;
@@ -48,7 +48,6 @@ class Camera {
   mat4 projection_matrix_;
   mat4 view_projection_matrix_;
 };
-
 }
 
-#endif  // SRC_CAMERA_HH_
+#endif // SRC_CAMERA_HH_

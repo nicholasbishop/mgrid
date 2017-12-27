@@ -13,7 +13,7 @@
 
 using namespace mgrid;
 
-std::string read_resource_string(const std::string& path) {
+std::string read_resource_string(const std::string &path) {
   auto r = cmrc::open(path);
   if (!r.begin()) {
     throw std::runtime_error("invalid resource: " + path);
@@ -22,11 +22,11 @@ std::string read_resource_string(const std::string& path) {
 }
 
 class App : public Window {
- public:
+public:
   App() : Window(GLVersion(4, 0)) {}
 
- private:
-  void on_key_event(const KeyEvent& event) final {
+private:
+  void on_key_event(const KeyEvent &event) final {
     if (!event.isPress()) {
       return;
     }
@@ -48,10 +48,7 @@ class App : public Window {
 
   void initialize() final {
     vec2 vertices[4] = {
-      {-1.0f, -1.0f},
-      { 1.0f, -1.0f},
-      { 1.0f,  1.0f},
-      {-1.0f,  1.0f},
+        {-1.0f, -1.0f}, {1.0f, -1.0f}, {1.0f, 1.0f}, {-1.0f, 1.0f},
     };
 
     const auto vs = read_resource_string("src/shaders/grid_vert.glsl");
@@ -99,9 +96,7 @@ class App : public Window {
     glDrawArrays(GL_PATCHES, 0, 4);
   }
 
-  void clean_up() {
-    program_ = nullopt;
-  }
+  void clean_up() { program_ = nullopt; }
 
   optional<ShaderProgram> program_;
   GLuint vao_;

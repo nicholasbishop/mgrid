@@ -27,14 +27,12 @@ static GLFWwindow *create_window(const mgrid::GLVersion &version) {
   }
   return window;
 }
-
 }
 
 namespace mgrid {
 
 GLVersion::GLVersion(const int major, const int minor)
-    : major(major), minor(minor) {
-}
+    : major(major), minor(minor) {}
 
 KeyEvent::KeyEvent(const int key, const int scancode, const int action,
                    const int mods)
@@ -44,32 +42,20 @@ bool KeyEvent::isPress() const {
   return action == GLFW_PRESS || action == GLFW_REPEAT;
 }
 
-bool KeyEvent::isEscape() const {
-  return key == GLFW_KEY_ESCAPE;
-}
+bool KeyEvent::isEscape() const { return key == GLFW_KEY_ESCAPE; }
 
-bool KeyEvent::isDownArrow() const {
-  return key == GLFW_KEY_DOWN;
-}
+bool KeyEvent::isDownArrow() const { return key == GLFW_KEY_DOWN; }
 
-bool KeyEvent::isLeftArrow() const {
-  return key == GLFW_KEY_LEFT;
-}
+bool KeyEvent::isLeftArrow() const { return key == GLFW_KEY_LEFT; }
 
-bool KeyEvent::isRightArrow() const {
-  return key == GLFW_KEY_RIGHT;
-}
+bool KeyEvent::isRightArrow() const { return key == GLFW_KEY_RIGHT; }
 
-bool KeyEvent::isUpArrow() const {
-  return key == GLFW_KEY_UP;
-}
+bool KeyEvent::isUpArrow() const { return key == GLFW_KEY_UP; }
 
 Size2i::Size2i(const int width, const int height)
-    : width(width), height(height) {
-}
+    : width(width), height(height) {}
 
-Window::Window(const GLVersion& version)
-    : wnd_(create_window(version)) {
+Window::Window(const GLVersion &version) : wnd_(create_window(version)) {
   glfwSetWindowUserPointer(wnd_, this);
   glfwSetKeyCallback(wnd_, &Window::key_callback);
 
@@ -77,9 +63,7 @@ Window::Window(const GLVersion& version)
   glfwSwapInterval(1);
 }
 
-void Window::close() {
-  glfwSetWindowShouldClose(wnd_, true);
-}
+void Window::close() { glfwSetWindowShouldClose(wnd_, true); }
 
 void Window::start() {
   check_gl_error("pre-initialize");
@@ -99,7 +83,6 @@ void Window::start() {
 
   glfwDestroyWindow(wnd_);
   glfwTerminate();
-
 }
 
 Size2i Window::framebuffer_size() const {
@@ -114,14 +97,13 @@ float Window::aspect_ratio() const {
   return static_cast<float>(size.width) / static_cast<float>(size.height);
 }
 
-void Window::on_key_event(const KeyEvent&) {}
+void Window::on_key_event(const KeyEvent &) {}
 
-void Window::key_callback(GLFWwindow* wnd, const int key,
-                          const int scancode, const int action,
-                          const int mods) {
-  Window* window = static_cast<Window*>(glfwGetWindowUserPointer(wnd));
+void Window::key_callback(GLFWwindow *wnd, const int key, const int scancode,
+                          const int action, const int mods) {
+  Window *window = static_cast<Window *>(glfwGetWindowUserPointer(wnd));
   KeyEvent event{key, scancode, action, mods};
   window->on_key_event(event);
 }
 
-}  // namespace mgrid
+} // namespace mgrid

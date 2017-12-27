@@ -5,7 +5,7 @@ in vec3 tcPosition[];
 out vec3 tePosition;
 out vec4 tePatchDistance;
 
-//uniform sampler2D gridTex;
+uniform sampler2D gridTex;
 
 uniform mat4 modelViewProjection;
 
@@ -17,7 +17,7 @@ void main()
   tePosition = mix(a, b, v);
   float fac = 1;
   tePosition.z = pow(u, 2) * fac + pow(v, 2) * fac;
-  //tePosition.z = texture(gridTex, gl_TessCoord.xy).z;
+  tePosition.z = texture(gridTex, gl_TessCoord.xy).z;
   tePatchDistance = vec4(u, v, 1-u, 1-v);
   gl_Position = modelViewProjection * vec4(tePosition, 1);
 }

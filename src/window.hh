@@ -16,9 +16,8 @@ public:
 };
 
 class KeyEvent {
- public:
-  KeyEvent(const int key, const int scancode, const int action,
-           const int mods);
+public:
+  KeyEvent(const int key, const int scancode, const int action, const int mods);
 
   bool isPress() const;
 
@@ -36,7 +35,7 @@ class KeyEvent {
 };
 
 class Size2i {
- public:
+public:
   Size2i(const int width, const int height);
 
   const int width;
@@ -44,8 +43,8 @@ class Size2i {
 };
 
 class Window {
- public:
-  Window(const GLVersion& version);
+public:
+  Window(const GLVersion &version);
 
   void close();
 
@@ -55,8 +54,8 @@ class Window {
 
   float aspect_ratio() const;
 
- private:
-  virtual void on_key_event(const KeyEvent& event);
+private:
+  virtual void on_key_event(const KeyEvent &event);
 
   virtual void initialize() = 0;
 
@@ -64,14 +63,13 @@ class Window {
 
   virtual void clean_up() = 0;
 
-  static void key_callback(GLFWwindow* window, const int key,
+  static void key_callback(GLFWwindow *window, const int key,
                            const int scancode, const int action,
                            const int mode);
 
-  GLFWwindow* wnd_;
+  GLFWwindow *wnd_;
   bool is_initialized_ = false;
 };
-
 }
 
-#endif  // SRC_WINDOW_HH_
+#endif // SRC_WINDOW_HH_

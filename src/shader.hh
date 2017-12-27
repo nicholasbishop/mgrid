@@ -10,18 +10,18 @@
 namespace mgrid {
 
 class Shader {
- public:
-  static Shader create(GLenum kind, const std::string& contents);
+public:
+  static Shader create(GLenum kind, const std::string &contents);
 
-  Shader(Shader&& other);
-  Shader(Shader&) = delete;
+  Shader(Shader &&other);
+  Shader(Shader &) = delete;
   ~Shader();
 
-  Shader& operator=(Shader&& other);
+  Shader &operator=(Shader &&other);
 
-  void attach(GLuint program); 
+  void attach(GLuint program);
 
- private:
+private:
   Shader(GLenum kind, GLuint handle);
 
   GLenum kind_;
@@ -29,29 +29,29 @@ class Shader {
 };
 
 class ShaderProgram {
- public:
+public:
   ShaderProgram();
-  ShaderProgram(ShaderProgram&&);
-  ShaderProgram(ShaderProgram&) = delete;
+  ShaderProgram(ShaderProgram &&);
+  ShaderProgram(ShaderProgram &) = delete;
 
   ~ShaderProgram();
 
-  ShaderProgram& operator=(ShaderProgram&& other);
+  ShaderProgram &operator=(ShaderProgram &&other);
 
-  void create_frag_shader(const std::string& code);
-  void create_geom_shader(const std::string& code);
-  void create_tess_ctrl_shader(const std::string& code);
-  void create_tess_eval_shader(const std::string& code);
-  void create_vert_shader(const std::string& code);
+  void create_frag_shader(const std::string &code);
+  void create_geom_shader(const std::string &code);
+  void create_tess_ctrl_shader(const std::string &code);
+  void create_tess_eval_shader(const std::string &code);
+  void create_vert_shader(const std::string &code);
 
   void link();
 
-  GLint attribute_location(const std::string& name);
-  GLint uniform_location(const std::string& name);
+  GLint attribute_location(const std::string &name);
+  GLint uniform_location(const std::string &name);
 
   void bind();
 
- private:
+private:
   GLuint handle_;
   optional<Shader> frag_;
   optional<Shader> geom_;
@@ -59,7 +59,6 @@ class ShaderProgram {
   optional<Shader> tess_eval_;
   optional<Shader> vert_;
 };
-
 }
 
-#endif  // SRC_SHADER_HH_
+#endif // SRC_SHADER_HH_
