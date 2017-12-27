@@ -23,6 +23,7 @@
 #undef minor
 #endif
 
+using glm::dvec2;
 using glm::ivec2;
 using glm::vec2;
 using glm::vec3;

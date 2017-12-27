@@ -19,9 +19,9 @@ class GLVersion {
 
 class CursorPositionEvent {
  public:
-  CursorPositionEvent(const vec2& pos);
+  CursorPositionEvent(const dvec2& pos);
 
-  const vec2 pos;
+  const dvec2 pos;
 };
 
 class KeyEvent {
@@ -45,11 +45,16 @@ class KeyEvent {
 
 class MouseButtonEvent {
  public:
-  MouseButtonEvent(const int button, const int action, const int mods);
+  MouseButtonEvent(const int button, const int action, const int mods,
+                   const dvec2& pos);
+
+  bool isLeftButton() const;
+  bool isPress() const;
 
   const int button;
   const int action;
   const int mods;
+  const dvec2 pos;
 };
 
 class Window {

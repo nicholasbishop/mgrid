@@ -50,7 +50,7 @@ namespace mgrid {
 GLVersion::GLVersion(const int major, const int minor)
     : major(major), minor(minor) {}
 
-CursorPositionEvent::CursorPositionEvent(const vec2& pos) : pos(pos) {}
+CursorPositionEvent::CursorPositionEvent(const dvec2& pos) : pos(pos) {}
 
 KeyEvent::KeyEvent(const int key,
                    const int scancode,
@@ -84,8 +84,17 @@ bool KeyEvent::isUpArrow() const {
 
 MouseButtonEvent::MouseButtonEvent(const int button,
                                    const int action,
-                                   const int mods)
-    : button(button), action(action), mods(mods) {}
+                                   const int mods,
+                                   const dvec2& pos)
+    : button(button), action(action), mods(mods), pos(pos) {}
+
+bool MouseButtonEvent::isLeftButton() const {
+  return button == GLFW_MOUSE_BUTTON_LEFT;
+}
+
+bool MouseButtonEvent::isPress() const {
+  return action == GLFW_PRESS;
+}
 
 Window::Window(const GLVersion& version) : wnd_(create_window(version)) {
   glfwSetWindowUserPointer(wnd_, this);
@@ -159,7 +168,9 @@ void Window::mouse_button_callback(GLFWwindow* const wnd,
                                    const int action,
                                    const int mods) {
   Window* window = from_user_pointer(wnd);
-  MouseButtonEvent event{button, action, mods};
+  dvec2 pos;
+  glfwGetCursorPos(wnd, &pos.x, &pos.y);
+  MouseButtonEvent event{button, action, mods, pos};
   window->on_mouse_button_event(event);
 }
 

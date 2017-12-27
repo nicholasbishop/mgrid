@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <vector>
 
@@ -28,6 +29,12 @@ class App : public Window {
   App() : Window(GLVersion(4, 0)) {}
 
  private:
+  void on_cursor_position_event(const CursorPositionEvent& event) final {
+    if (in_left_drag_) {
+      std::cout << event.pos.x << ", " << event.pos.y << std::endl;
+    }
+  }
+
   void on_key_event(const KeyEvent& event) final {
     if (!event.isPress()) {
       return;
@@ -45,6 +52,17 @@ class App : public Window {
       camera_.set_height_angle(camera_.height_angle() + angle_delta);
     } else if (event.isDownArrow()) {
       camera_.set_height_angle(camera_.height_angle() - angle_delta);
+    }
+  }
+
+  void on_mouse_button_event(const MouseButtonEvent& event) final {
+    if (event.isLeftButton()) {
+      if (event.isPress()) {
+        in_left_drag_ = true;
+        left_drag_start_ = event.pos;
+      } else {
+        in_left_drag_ = false;
+      }
     }
   }
 
@@ -137,6 +155,8 @@ class App : public Window {
   GLuint vertex_buffer;
   GLint mvp_location, vpos_location;
   Camera camera_;
+  bool in_left_drag_ = false;
+  vec2 left_drag_start_;
 };
 
 int main(void) {
