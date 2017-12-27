@@ -21,6 +21,7 @@
 #undef minor
 #endif
 
+using glm::vec2;
 using glm::vec3;
 using glm::mat4;
 

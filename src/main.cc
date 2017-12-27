@@ -6,13 +6,6 @@
 
 using namespace mgrid;
 
-static const struct {
-  float x, y;
-  float r, g, b;
-} vertices[3] = {{-0.6f, -0.4f, 1.f, 0.f, 0.f},
-                 {0.6f, -0.4f, 0.f, 1.f, 0.f},
-                 {0.f, 0.6f, 0.f, 0.f, 1.f}};
-
 static const char *vertex_shader_text =
     "uniform mat4 MVP;\n"
     "attribute vec3 vCol;\n"
@@ -28,7 +21,7 @@ static const char *fragment_shader_text =
     "varying vec3 color;\n"
     "void main()\n"
     "{\n"
-    "    gl_FragColor = vec4(color, 1.0);\n"
+    "    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
     "}\n";
 
 
@@ -63,6 +56,13 @@ class App : public Window {
   }
 
   void initialize() final {
+    vec2 vertices[4] = {
+      {-1.0f, -1.0f},
+      { 1.0f, -1.0f},
+      { 1.0f,  1.0f},
+      {-1.0f,  1.0f},
+    };
+
     // NOTE: OpenGL error checks have been omitted for brevity
     glGenBuffers(1, &vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
@@ -79,13 +79,10 @@ class App : public Window {
     glLinkProgram(program);
     mvp_location = glGetUniformLocation(program, "MVP");
     vpos_location = glGetAttribLocation(program, "vPos");
-    vcol_location = glGetAttribLocation(program, "vCol");
     glEnableVertexAttribArray(vpos_location);
-    glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5,
+    const int stride = 0;
+    glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE, stride,
                           (void *)0);
-    glEnableVertexAttribArray(vcol_location);
-    glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5,
-                          (void *)(sizeof(float) * 2));
   }
 
   void render() final {
@@ -102,11 +99,11 @@ class App : public Window {
     //const auto mvp = linalg::transpose(camera_.view_projection_matrix());
     glUseProgram(program);
     glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &mvp[0][0]);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_LINE_LOOP, 0, 4);
   }
 
   GLuint vertex_buffer, vertex_shader, fragment_shader, program;
-  GLint mvp_location, vpos_location, vcol_location;
+  GLint mvp_location, vpos_location;
   Camera camera_;
 };
 
