@@ -9,6 +9,6 @@ pkg_check_modules(eigen3 REQUIRED)
 add_compile_options(-Wall -Wextra)
 include_directories(.)
 
-add_executable(mgrid src/main.cc src/window.cc)
+add_executable(mgrid src/angle.cc src/camera.cc src/main.cc src/window.cc)
 
 target_link_libraries(mgrid ${LIBEPOXY_LIBRARIES} glfw)

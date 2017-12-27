@@ -1,7 +1,6 @@
 #include <epoxy/gl.h>
 
-#include "linmath.h"
-
+#include "camera.hh"
 #include "common.hh"
 #include "window.hh"
 
@@ -44,8 +43,22 @@ class App : public Window {
 
  private:
   void on_key_event(const KeyEvent& event) final {
-    if (event.isEscape() && event.isPress()) {
+    if (!event.isPress()) {
+      return;
+    }
+
+    const Angle angle_delta = Angle::from_degrees(5);
+
+    if (event.isEscape()) {
       close();
+    } else if (event.isLeftArrow()) {
+      camera_.set_around_angle(camera_.around_angle() - angle_delta);
+    } else if (event.isRightArrow()) {
+      camera_.set_around_angle(camera_.around_angle() + angle_delta);
+    } else if (event.isUpArrow()) {
+      camera_.set_height_angle(camera_.height_angle() + angle_delta);
+    } else if (event.isDownArrow()) {
+      camera_.set_height_angle(camera_.height_angle() - angle_delta);
     }
   }
 
@@ -77,21 +90,23 @@ class App : public Window {
 
   void render() final {
     const auto size = framebuffer_size();
-    const auto ratio = aspect_ratio();
-    mat4x4 m, p, mvp;
+    camera_.set_size(size.width, size.height);
+    //float4x4 m, p, mvp;
     glViewport(0, 0, size.width, size.height);
     glClear(GL_COLOR_BUFFER_BIT);
-    mat4x4_identity(m);
+    //m = linalg::identity;
     //mat4x4_rotate_Z(m, m, (float)glfwGetTime());
-    mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-    mat4x4_mul(mvp, p, m);
+    //mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+    //mat4x4_mul(mvp, p, m);
+    const auto mvp = camera_.view_projection_matrix();
     glUseProgram(program);
-    glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat *)mvp);
+    glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &mvp.x.x);
     glDrawArrays(GL_TRIANGLES, 0, 3);
   }
 
   GLuint vertex_buffer, vertex_shader, fragment_shader, program;
   GLint mvp_location, vpos_location, vcol_location;
+  Camera camera_;
 };
 
 int main(void) {

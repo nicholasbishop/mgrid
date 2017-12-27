@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include "linalg.h"
+
 #ifdef __GNUC__
 #  define UNUSED(x) UNUSED_ ## x __attribute__((__unused__))
 #else
@@ -17,5 +19,7 @@
 #ifdef minor
 #undef minor
 #endif
+
+using namespace linalg::aliases;
 
 #endif  // SRC_COMMON_HH_

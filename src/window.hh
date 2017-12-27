@@ -20,8 +20,14 @@ class KeyEvent {
   KeyEvent(const int key, const int scancode, const int action,
            const int mods);
 
-  bool isEscape() const;
   bool isPress() const;
+
+  bool isEscape() const;
+
+  bool isDownArrow() const;
+  bool isLeftArrow() const;
+  bool isRightArrow() const;
+  bool isUpArrow() const;
 
   const int key;
   const int scancode;

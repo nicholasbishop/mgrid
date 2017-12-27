@@ -19,7 +19,7 @@ static GLFWwindow *create_window(const mgrid::GLVersion &version) {
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, version.major);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, version.minor);
-  GLFWwindow *window = glfwCreateWindow(640, 480, "mgrid", NULL, NULL);
+  GLFWwindow *window = glfwCreateWindow(1280, 800, "mgrid", NULL, NULL);
   if (!window) {
     glfwTerminate();
     exit(EXIT_FAILURE);
@@ -45,6 +45,22 @@ bool KeyEvent::isEscape() const {
 
 bool KeyEvent::isPress() const {
   return action == GLFW_PRESS;
+}
+
+bool KeyEvent::isDownArrow() const {
+  return action == GLFW_KEY_DOWN;
+}
+
+bool KeyEvent::isLeftArrow() const {
+  return action == GLFW_KEY_LEFT;
+}
+
+bool KeyEvent::isRightArrow() const {
+  return action == GLFW_KEY_RIGHT;
+}
+
+bool KeyEvent::isUpArrow() const {
+  return action == GLFW_KEY_UP;
 }
 
 Size2i::Size2i(const int width, const int height)
