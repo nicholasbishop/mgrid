@@ -29,9 +29,17 @@ class App : public Window {
   App() : Window(GLVersion(4, 0)) {}
 
  private:
+  bool over_mesh(const dvec2& pos) {
+    return false;
+  }
+
   void on_cursor_position_event(const CursorPositionEvent& event) final {
     if (in_left_drag_) {
-      std::cout << event.pos.x << ", " << event.pos.y << std::endl;
+      if (over_mesh(event.pos)) {
+        std::cout << "over mesh" << std::endl;
+      } else {
+        std::cout << "bg" << std::endl;
+      }
     }
   }
 
