@@ -3,6 +3,8 @@
 
 #include <epoxy/gl.h>
 
+#include "cmrc/cmrc.hpp"
+
 #include "camera.hh"
 #include "common.hh"
 #include "errors.hh"
@@ -11,11 +13,9 @@
 
 using namespace mgrid;
 
-std::string read_entire_file(const std::string& path) {
-  std::ifstream in(path);
-  auto ss = std::ostringstream{};
-  ss << in.rdbuf();
-  return ss.str();
+std::string read_resource_string(const std::string& path) {
+  auto r = cmrc::open(path);
+  return {r.begin(), r.end()};
 }
 
 class App : public Window {
@@ -51,8 +51,8 @@ class App : public Window {
       {-1.0f,  1.0f},
     };
 
-    const auto vs = read_entire_file("../src/shaders/basic.vert.glsl");
-    const auto fs = read_entire_file("../src/shaders/basic.frag.glsl");
+    const auto vs = read_resource_string("src/shaders/basic.vert.glsl");
+    const auto fs = read_resource_string("src/shaders/basic.frag.glsl");
 
     // NOTE: OpenGL error checks have been omitted for brevity
     glGenBuffers(1, &vertex_buffer);
@@ -94,6 +94,8 @@ class App : public Window {
 };
 
 int main(void) {
+  CMRC_INIT(resources);
+
   App app;
   app.start();
 

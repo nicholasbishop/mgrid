@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(mgrid)
 
+include(infra/CMakeRC.cmake)
+
 set(CMAKE_CXX_STANDARD 14)
 
 find_package(PkgConfig REQUIRED)
@@ -11,6 +13,10 @@ pkg_check_modules(eigen3 REQUIRED)
 add_compile_options(-Wall -Wextra)
 include_directories(. glm)
 
+cmrc_add_resource_library(resources
+  src/shaders/basic.vert.glsl
+  src/shaders/basic.frag.glsl)
+
 add_executable(mgrid
   src/angle.cc
   src/camera.cc
@@ -19,4 +25,4 @@ add_executable(mgrid
   src/shader.cc
   src/window.cc)
 
-target_link_libraries(mgrid ${LIBEPOXY_LIBRARIES} glfw)
+target_link_libraries(mgrid ${LIBEPOXY_LIBRARIES} glfw resources)
