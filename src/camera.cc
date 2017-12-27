@@ -1,24 +1,28 @@
 #include "camera.hh"
 
+#include "glm/gtc/matrix_transform.hpp"
+
+#include <iostream>
+
 namespace mgrid {
 
 Camera::Camera() {
   update();
 }
 
-float3 Camera::position() const {
+vec3 Camera::position() const {
   return position_;
 }
 
-float4x4 Camera::view_matrix() const {
+mat4 Camera::view_matrix() const {
   return view_matrix_;
 }
 
-float4x4 Camera::projection_matrix() const {
+mat4 Camera::projection_matrix() const {
   return projection_matrix_;
 }
 
-float4x4 Camera::view_projection_matrix() const {
+mat4 Camera::view_projection_matrix() const {
   return view_projection_matrix_;
 }
 
@@ -56,20 +60,18 @@ void Camera::set_size(const int width, const int height) {
 
 void Camera::update() {
   // TODO
-  view_matrix_ = linalg::identity;
-  position_[0] = 0;
-  position_[1] = distance_;
-  position_[2] = 0;
+  position_[0] = cos(around_angle_.in_radians()) * distance_;
+  position_[1] = cos(height_angle_.in_radians()) * distance_;
+  position_[2] = sin(around_angle_.in_radians()) * distance_;
 
-  view_matrix_.w.y = distance_;
+  view_matrix_ = glm::lookAt(position_, target_, vec3(0, 1, 0));
 
   const auto fovy = Angle::from_degrees(70);
-  const float near = 0.01f;
-  const float far = 1000.0f;
-  projection_matrix_ = linalg::perspective_matrix(
-      fovy.in_radians(), aspect_ratio(), near, far);
+  const float near = 0.1f;
+  const float far = 100.0f;
+  projection_matrix_ = glm::perspectiveFov<float>(
+      fovy.in_radians(), width_, height_, near, far);
   view_projection_matrix_ = projection_matrix_ * view_matrix_;
-  view_projection_matrix_ = linalg::identity;
 }
 
 }

@@ -39,28 +39,28 @@ KeyEvent::KeyEvent(const int key, const int scancode, const int action,
                    const int mods)
     : key(key), scancode(scancode), action(action), mods(mods) {}
 
+bool KeyEvent::isPress() const {
+  return action == GLFW_PRESS || action == GLFW_REPEAT;
+}
+
 bool KeyEvent::isEscape() const {
   return key == GLFW_KEY_ESCAPE;
 }
 
-bool KeyEvent::isPress() const {
-  return action == GLFW_PRESS;
-}
-
 bool KeyEvent::isDownArrow() const {
-  return action == GLFW_KEY_DOWN;
+  return key == GLFW_KEY_DOWN;
 }
 
 bool KeyEvent::isLeftArrow() const {
-  return action == GLFW_KEY_LEFT;
+  return key == GLFW_KEY_LEFT;
 }
 
 bool KeyEvent::isRightArrow() const {
-  return action == GLFW_KEY_RIGHT;
+  return key == GLFW_KEY_RIGHT;
 }
 
 bool KeyEvent::isUpArrow() const {
-  return action == GLFW_KEY_UP;
+  return key == GLFW_KEY_UP;
 }
 
 Size2i::Size2i(const int width, const int height)
@@ -87,7 +87,7 @@ void Window::start() {
     render();
 
     glfwSwapBuffers(wnd_);
-    glfwPollEvents();
+    glfwWaitEvents();
   }
   glfwDestroyWindow(wnd_);
   glfwTerminate();

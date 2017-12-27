@@ -3,8 +3,9 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <string>
 
-#include "linalg.h"
+#include "glm/fwd.hpp"
 
 #ifdef __GNUC__
 #  define UNUSED(x) UNUSED_ ## x __attribute__((__unused__))
@@ -20,6 +21,7 @@
 #undef minor
 #endif
 
-using namespace linalg::aliases;
+using glm::vec3;
+using glm::mat4;
 
 #endif  // SRC_COMMON_HH_
