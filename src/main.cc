@@ -29,11 +29,6 @@ class App : public Window {
  public:
   App() : Window(GLVersion(2, 0)) {}
 
-  void run() {
-    initialize();
-    start();
-  }
-
  private:
   void on_key_event(const KeyEvent& event) final {
     if (!event.isPress()) {
@@ -88,15 +83,9 @@ class App : public Window {
   void render() final {
     const auto size = framebuffer_size();
     camera_.set_size(size.width, size.height);
-    //float4x4 m, p, mvp;
     glViewport(0, 0, size.width, size.height);
     glClear(GL_COLOR_BUFFER_BIT);
-    //m = linalg::identity;
-    //mat4x4_rotate_Z(m, m, (float)glfwGetTime());
-    //mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-    //mat4x4_mul(mvp, p, m);
     const auto mvp = camera_.view_projection_matrix();
-    //const auto mvp = linalg::transpose(camera_.view_projection_matrix());
     glUseProgram(program);
     glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &mvp[0][0]);
     glDrawArrays(GL_LINE_LOOP, 0, 4);
@@ -109,7 +98,7 @@ class App : public Window {
 
 int main(void) {
   App app;
-  app.run();
+  app.start();
 
   return 0;
 }
