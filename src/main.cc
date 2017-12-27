@@ -77,11 +77,9 @@ private:
     mvp_location = program_->uniform_location("modelViewProjection");
     vpos_location = program_->attribute_location("vertexPosition");
     glEnableVertexAttribArray(vpos_location);
-    check_gl_error("a");
     const int stride = 0;
     glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE, stride,
                           nullptr);
-    check_gl_error("b");
   }
 
   void render() final {
