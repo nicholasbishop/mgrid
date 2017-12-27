@@ -1,17 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
 project(mgrid)
 
-set(CMAKE_AUTOMOC on)
-set(CMAKE_AUTORCC on)
-
-find_package(Qt53DExtras)
+find_package(glfw3 3.2 REQUIRED)
 
 add_compile_options(-Wall -Wextra)
 include_directories(.)
 
-add_executable(mgrid
-  src/grid.cc
-  src/main.cc
-  src/resources.qrc)
+add_executable(mgrid src/main.cc)
 
-target_link_libraries(mgrid Qt5::3DExtras)
+target_link_libraries(mgrid glfw3)
