@@ -1,4 +1,8 @@
+#include <epoxy/gl.h>
+
 #include <GLFW/glfw3.h>
+
+#include <iostream>
 
 #include "errors.hh"
 #include "window.hh"
@@ -7,6 +11,16 @@ namespace {
 
 void error_callback(int error, const char *description) {
   fprintf(stderr, "Error %d: %s\n", error, description);
+}
+
+void gl_debug_callback(GLenum source,
+                       GLenum type,
+                       GLuint id,
+                       GLenum severity,
+                       GLsizei length,
+                       const GLchar* message,
+                       const void* userParam) {
+  std::cerr << source << ":" << message << std::endl;
 }
 
 void init_glfw() {
@@ -66,6 +80,8 @@ Window::Window(const GLVersion &version) : wnd_(create_window(version)) {
 void Window::close() { glfwSetWindowShouldClose(wnd_, true); }
 
 void Window::start() {
+  glDebugMessageCallback(gl_debug_callback, nullptr);
+
   check_gl_error("pre-initialize");
   initialize();
   check_gl_error("post-initialize");

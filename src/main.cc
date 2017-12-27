@@ -1,5 +1,6 @@
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 #include <epoxy/gl.h>
 
@@ -9,6 +10,7 @@
 #include "common.hh"
 #include "errors.hh"
 #include "shader.hh"
+#include "texture.hh"
 #include "window.hh"
 
 using namespace mgrid;
@@ -57,6 +59,9 @@ private:
     const auto tcs = read_resource_string("src/shaders/grid_tess_ctrl.glsl");
     const auto tes = read_resource_string("src/shaders/grid_tess_eval.glsl");
 
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+
     glGenVertexArrays(1, &vao_);
     glBindVertexArray(vao_);
 
@@ -80,13 +85,42 @@ private:
     const int stride = 0;
     glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE, stride,
                           nullptr);
+
+    const int tw = 64;
+    const int th = 64;
+    std::vector<vec3> texdata;
+    texdata.resize(tw * th);
+    for (int y = 0; y < th; y++) {
+      for (int x = 0; x < tw; x++) {
+        texdata[y * tw + x].x = 0;
+        texdata[y * tw + x].y = 0;
+        texdata[y * tw + x].z = ((rand() % 128) - 64) / 256.0f;
+      }
+    }
+    grid_texture_ = Texture(GL_TEXTURE_2D);
+    grid_texture_->bind();
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tw, th, 0, GL_RGB,
+                 GL_FLOAT, texdata.data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    const auto tex_location = program_->uniform_location("gridTex");
+    check_gl_error("a");
+    glUniform1i(tex_location, 0);
+    check_gl_error("b");
+    glActiveTexture(GL_TEXTURE0 + 0);
+    check_gl_error("c");
+    grid_texture_->bind();
+    check_gl_error("d");
   }
 
   void render() final {
     const auto size = framebuffer_size();
     camera_.set_size(size.width, size.height);
     glViewport(0, 0, size.width, size.height);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     const auto mvp = camera_.view_projection_matrix();
     program_->bind();
     glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &mvp[0][0]);
@@ -94,9 +128,13 @@ private:
     glDrawArrays(GL_PATCHES, 0, 4);
   }
 
-  void clean_up() { program_ = nullopt; }
+  void clean_up() {
+    program_ = nullopt;
+    grid_texture_ = nullopt;
+  }
 
   optional<ShaderProgram> program_;
+  optional<Texture> grid_texture_;
   GLuint vao_;
   GLuint vertex_buffer;
   GLint mvp_location, vpos_location;

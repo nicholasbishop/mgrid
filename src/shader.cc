@@ -32,7 +32,9 @@ Shader Shader::create(const GLenum kind, const std::string &contents) {
   glGetShaderInfoLog(shader, log_length, &log_length, &log[0]);
   log.resize(log_length);
 
-  std::cout << log << std::endl;
+  if (!log.empty()) {
+    std::cout << log << std::endl;
+  }
 
   return Shader{kind, shader};
 }
@@ -118,6 +120,7 @@ void ShaderProgram::link() {
 }
 
 GLint ShaderProgram::uniform_location(const std::string &name) {
+  bind();
   const auto loc = glGetUniformLocation(handle_, name.c_str());
   if (loc == -1) {
     throw ShaderError("glGetUniformLocation failed");
@@ -126,6 +129,7 @@ GLint ShaderProgram::uniform_location(const std::string &name) {
 }
 
 GLint ShaderProgram::attribute_location(const std::string &name) {
+  bind();
   const auto loc = glGetAttribLocation(handle_, name.c_str());
   if (loc == -1) {
     throw ShaderError("glGetAttribLocation failed");

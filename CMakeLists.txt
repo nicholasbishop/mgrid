@@ -27,6 +27,7 @@ add_executable(mgrid
   src/errors.cc
   src/main.cc
   src/shader.cc
+  src/texture.cc
   src/window.cc)
 
 target_link_libraries(mgrid ${LIBEPOXY_LIBRARIES} glfw resources)
