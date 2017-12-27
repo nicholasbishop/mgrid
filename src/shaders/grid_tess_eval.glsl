@@ -16,7 +16,7 @@ void main()
   vec3 b = mix(tcPosition[3], tcPosition[2], u);
   tePosition = mix(a, b, v);
   vec4 texel = texture(gridTex, gl_TessCoord.xy);
-  tePosition += texel.xyz;
+  tePosition = texel.xyz;
   tePatchDistance = vec4(u, v, 1-u, 1-v);
   gl_Position = modelViewProjection * vec4(tePosition, 1);
 }

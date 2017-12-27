@@ -87,19 +87,21 @@ private:
                           nullptr);
 
     const int tw = 64;
+    const float hw = tw / 2.0f;
     const int th = 64;
+    const float hh = th / 2.0f;
     std::vector<vec3> texdata;
     texdata.resize(tw * th);
     for (int y = 0; y < th; y++) {
       for (int x = 0; x < tw; x++) {
-        texdata[y * tw + x].x = 0;
-        texdata[y * tw + x].y = 0;
+        texdata[y * tw + x].x = x / hw - 1;
+        texdata[y * tw + x].y = y / hh - 1;
         texdata[y * tw + x].z = ((rand() % 128) - 64) / 1024.0f;
       }
     }
     grid_texture_ = Texture(GL_TEXTURE_2D);
     grid_texture_->bind();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tw, th, 0, GL_RGB,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, tw, th, 0, GL_RGB,
                  GL_FLOAT, texdata.data());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
