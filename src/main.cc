@@ -1,9 +1,11 @@
 #include <epoxy/gl.h>
 
-#include <GLFW/glfw3.h>
+#include "linmath.h"
 
 #include "common.hh"
-#include "linmath.h"
+#include "window.hh"
+
+using namespace mgrid;
 
 static const struct {
   float x, y;
@@ -30,92 +32,71 @@ static const char *fragment_shader_text =
     "    gl_FragColor = vec4(color, 1.0);\n"
     "}\n";
 
-static void error_callback(int error, const char *description) {
-  fprintf(stderr, "Error %d: %s\n", error, description);
-}
 
-static void key_callback(GLFWwindow *window, int key, int UNUSED(scancode),
-                         int action, int UNUSED(mods)) {
-  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-    glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
+class App : public Window {
+ public:
+  App() : Window(GLVersion(2, 0)) {}
 
-static void init_glfw() {
-  glfwSetErrorCallback(error_callback);
-  if (!glfwInit())
-    exit(EXIT_FAILURE);
-}
-
-class GLVersion {
-public:
-  GLVersion(const int major, const int minor) : major(major), minor(minor) {}
-
-  const int major;
-  const int minor;
-};
-
-static GLFWwindow *create_window(const GLVersion &version) {
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, version.major);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, version.minor);
-  GLFWwindow *window = glfwCreateWindow(640, 480, "mgrid", NULL, NULL);
-  if (!window) {
-    glfwTerminate();
-    exit(EXIT_FAILURE);
+  void run() {
+    initialize();
+    start();
   }
-  return window;
-}
 
-int main(void) {
-  GLFWwindow *window;
-  GLuint vertex_buffer, vertex_shader, fragment_shader, program;
-  GLint mvp_location, vpos_location, vcol_location;
-  init_glfw();
-  window = create_window(GLVersion(2, 0));
-  glfwSetKeyCallback(window, key_callback);
-  glfwMakeContextCurrent(window);
-  glfwSwapInterval(1);
-  // NOTE: OpenGL error checks have been omitted for brevity
-  glGenBuffers(1, &vertex_buffer);
-  glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-  vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(vertex_shader, 1, &vertex_shader_text, NULL);
-  glCompileShader(vertex_shader);
-  fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(fragment_shader, 1, &fragment_shader_text, NULL);
-  glCompileShader(fragment_shader);
-  program = glCreateProgram();
-  glAttachShader(program, vertex_shader);
-  glAttachShader(program, fragment_shader);
-  glLinkProgram(program);
-  mvp_location = glGetUniformLocation(program, "MVP");
-  vpos_location = glGetAttribLocation(program, "vPos");
-  vcol_location = glGetAttribLocation(program, "vCol");
-  glEnableVertexAttribArray(vpos_location);
-  glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5,
-                        (void *)0);
-  glEnableVertexAttribArray(vcol_location);
-  glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5,
-                        (void *)(sizeof(float) * 2));
-  while (!glfwWindowShouldClose(window)) {
-    float ratio;
-    int width, height;
+ private:
+  void on_key_event(const KeyEvent& event) final {
+    if (event.isEscape() && event.isPress()) {
+      close();
+    }
+  }
+
+  void initialize() final {
+    // NOTE: OpenGL error checks have been omitted for brevity
+    glGenBuffers(1, &vertex_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertex_shader, 1, &vertex_shader_text, NULL);
+    glCompileShader(vertex_shader);
+    fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment_shader, 1, &fragment_shader_text, NULL);
+    glCompileShader(fragment_shader);
+    program = glCreateProgram();
+    glAttachShader(program, vertex_shader);
+    glAttachShader(program, fragment_shader);
+    glLinkProgram(program);
+    mvp_location = glGetUniformLocation(program, "MVP");
+    vpos_location = glGetAttribLocation(program, "vPos");
+    vcol_location = glGetAttribLocation(program, "vCol");
+    glEnableVertexAttribArray(vpos_location);
+    glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5,
+                          (void *)0);
+    glEnableVertexAttribArray(vcol_location);
+    glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5,
+                          (void *)(sizeof(float) * 2));
+  }
+
+  void render() final {
+    const auto size = framebuffer_size();
+    const auto ratio = aspect_ratio();
     mat4x4 m, p, mvp;
-    glfwGetFramebufferSize(window, &width, &height);
-    ratio = width / (float)height;
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, size.width, size.height);
     glClear(GL_COLOR_BUFFER_BIT);
     mat4x4_identity(m);
-    mat4x4_rotate_Z(m, m, (float)glfwGetTime());
+    //mat4x4_rotate_Z(m, m, (float)glfwGetTime());
     mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
     mat4x4_mul(mvp, p, m);
     glUseProgram(program);
     glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat *)mvp);
     glDrawArrays(GL_TRIANGLES, 0, 3);
-    glfwSwapBuffers(window);
-    glfwPollEvents();
   }
-  glfwDestroyWindow(window);
-  glfwTerminate();
-  exit(EXIT_SUCCESS);
+
+  GLuint vertex_buffer, vertex_shader, fragment_shader, program;
+  GLint mvp_location, vpos_location, vcol_location;
+};
+
+int main(void) {
+  App app;
+  app.run();
+
+  return 0;
 }
