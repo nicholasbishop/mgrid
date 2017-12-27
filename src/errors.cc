@@ -4,9 +4,9 @@
 
 namespace mgrid {
 
-GLError::GLError(const std::string &what) : runtime_error(what) {}
+GLError::GLError(const std::string& what) : runtime_error(what) {}
 
-void check_gl_error(const std::string &where) {
+void check_gl_error(const std::string& where) {
   const auto err = glGetError();
   if (err == GL_NO_ERROR) {
     return;
@@ -14,17 +14,17 @@ void check_gl_error(const std::string &where) {
 
   std::string str = "unknown";
   switch (err) {
-  case GL_INVALID_ENUM:
-    str = "invalid enum";
-    break;
+    case GL_INVALID_ENUM:
+      str = "invalid enum";
+      break;
 
-  case GL_INVALID_VALUE:
-    str = "invalid value";
-    break;
+    case GL_INVALID_VALUE:
+      str = "invalid value";
+      break;
 
-  case GL_INVALID_OPERATION:
-    str = "invalid operation";
-    break;
+    case GL_INVALID_OPERATION:
+      str = "invalid operation";
+      break;
   }
 
   if (!where.empty()) {

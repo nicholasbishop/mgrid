@@ -30,4 +30,4 @@ using glm::mat4;
 using std::experimental::optional;
 using std::experimental::nullopt;
 
-#endif // SRC_COMMON_HH_
+#endif  // SRC_COMMON_HH_

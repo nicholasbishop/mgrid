@@ -13,7 +13,7 @@ Texture::Texture(GLenum target) : target_(target), handle_(0) {
   }
 }
 
-Texture::Texture(Texture &&other) {
+Texture::Texture(Texture&& other) {
   std::swap(target_, other.target_);
   std::swap(handle_, other.handle_);
 }
@@ -22,7 +22,7 @@ Texture::~Texture() {
   glDeleteTextures(1, &handle_);
 }
 
-Texture& Texture::operator=(Texture &&other) {
+Texture& Texture::operator=(Texture&& other) {
   std::swap(target_, other.target_);
   std::swap(handle_, other.handle_);
   return *this;
@@ -31,5 +31,4 @@ Texture& Texture::operator=(Texture &&other) {
 void Texture::bind() {
   glBindTexture(GL_TEXTURE_2D, handle_);
 }
-
 }

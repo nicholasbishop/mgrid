@@ -8,11 +8,11 @@ namespace mgrid {
 class Texture {
  public:
   explicit Texture(GLenum target);
-  Texture(Texture &&other);
-  Texture(Texture &) = delete;
+  Texture(Texture&& other);
+  Texture(Texture&) = delete;
   ~Texture();
 
-  Texture& operator=(Texture &&other);
+  Texture& operator=(Texture&& other);
 
   void bind();
 
@@ -20,7 +20,6 @@ class Texture {
   GLenum target_;
   GLuint handle_;
 };
-
 }
 
 #endif  // SRC_TEXTURE_HH_

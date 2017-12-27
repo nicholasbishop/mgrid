@@ -9,12 +9,12 @@
 namespace mgrid {
 
 class ShaderError : public std::runtime_error {
-public:
-  ShaderError(const std::string &what) : runtime_error(what) {}
+ public:
+  ShaderError(const std::string& what) : runtime_error(what) {}
 };
 
-Shader Shader::create(const GLenum kind, const std::string &contents) {
-  const char *c_str = contents.c_str();
+Shader Shader::create(const GLenum kind, const std::string& contents) {
+  const char* c_str = contents.c_str();
   const int count = 1;
 
   const auto shader = glCreateShader(kind);
@@ -39,7 +39,9 @@ Shader Shader::create(const GLenum kind, const std::string &contents) {
   return Shader{kind, shader};
 }
 
-Shader::Shader(Shader &&other) { std::swap(handle_, other.handle_); }
+Shader::Shader(Shader&& other) {
+  std::swap(handle_, other.handle_);
+}
 
 Shader::Shader(GLenum kind, GLuint handle) : kind_(kind), handle_(handle) {
   if (!handle_) {
@@ -47,9 +49,11 @@ Shader::Shader(GLenum kind, GLuint handle) : kind_(kind), handle_(handle) {
   }
 }
 
-Shader::~Shader() { glDeleteShader(handle_); }
+Shader::~Shader() {
+  glDeleteShader(handle_);
+}
 
-Shader &Shader::operator=(Shader &&other) {
+Shader& Shader::operator=(Shader&& other) {
   std::swap(handle_, other.handle_);
   return *this;
 }
@@ -66,7 +70,7 @@ ShaderProgram::ShaderProgram() : handle_(glCreateProgram()) {
   }
 }
 
-ShaderProgram::ShaderProgram(ShaderProgram &&other) {
+ShaderProgram::ShaderProgram(ShaderProgram&& other) {
   std::swap(handle_, other.handle_);
   std::swap(frag_, other.frag_);
   std::swap(geom_, other.geom_);
@@ -75,9 +79,11 @@ ShaderProgram::ShaderProgram(ShaderProgram &&other) {
   std::swap(vert_, other.vert_);
 }
 
-ShaderProgram::~ShaderProgram() { glDeleteProgram(handle_); }
+ShaderProgram::~ShaderProgram() {
+  glDeleteProgram(handle_);
+}
 
-ShaderProgram &ShaderProgram::operator=(ShaderProgram &&other) {
+ShaderProgram& ShaderProgram::operator=(ShaderProgram&& other) {
   std::swap(handle_, other.handle_);
   std::swap(frag_, other.frag_);
   std::swap(geom_, other.geom_);
@@ -87,23 +93,23 @@ ShaderProgram &ShaderProgram::operator=(ShaderProgram &&other) {
   return *this;
 }
 
-void ShaderProgram::create_frag_shader(const std::string &code) {
+void ShaderProgram::create_frag_shader(const std::string& code) {
   frag_ = std::move(Shader::create(GL_FRAGMENT_SHADER, code));
 }
 
-void ShaderProgram::create_geom_shader(const std::string &code) {
+void ShaderProgram::create_geom_shader(const std::string& code) {
   geom_ = Shader::create(GL_GEOMETRY_SHADER, code);
 }
 
-void ShaderProgram::create_tess_ctrl_shader(const std::string &code) {
+void ShaderProgram::create_tess_ctrl_shader(const std::string& code) {
   tess_ctrl_ = Shader::create(GL_TESS_CONTROL_SHADER, code);
 }
 
-void ShaderProgram::create_tess_eval_shader(const std::string &code) {
+void ShaderProgram::create_tess_eval_shader(const std::string& code) {
   tess_eval_ = Shader::create(GL_TESS_EVALUATION_SHADER, code);
 }
 
-void ShaderProgram::create_vert_shader(const std::string &code) {
+void ShaderProgram::create_vert_shader(const std::string& code) {
   vert_ = Shader::create(GL_VERTEX_SHADER, code);
 }
 
@@ -119,7 +125,7 @@ void ShaderProgram::link() {
   check_gl_error("post-link");
 }
 
-GLint ShaderProgram::uniform_location(const std::string &name) {
+GLint ShaderProgram::uniform_location(const std::string& name) {
   bind();
   const auto loc = glGetUniformLocation(handle_, name.c_str());
   if (loc == -1) {
@@ -128,7 +134,7 @@ GLint ShaderProgram::uniform_location(const std::string &name) {
   return loc;
 }
 
-GLint ShaderProgram::attribute_location(const std::string &name) {
+GLint ShaderProgram::attribute_location(const std::string& name) {
   bind();
   const auto loc = glGetAttribLocation(handle_, name.c_str());
   if (loc == -1) {
@@ -137,5 +143,7 @@ GLint ShaderProgram::attribute_location(const std::string &name) {
   return loc;
 }
 
-void ShaderProgram::bind() { glUseProgram(handle_); }
+void ShaderProgram::bind() {
+  glUseProgram(handle_);
+}
 }

@@ -15,7 +15,7 @@
 
 using namespace mgrid;
 
-std::string read_resource_string(const std::string &path) {
+std::string read_resource_string(const std::string& path) {
   auto r = cmrc::open(path);
   if (!r.begin()) {
     throw std::runtime_error("invalid resource: " + path);
@@ -24,11 +24,11 @@ std::string read_resource_string(const std::string &path) {
 }
 
 class App : public Window {
-public:
+ public:
   App() : Window(GLVersion(4, 0)) {}
 
-private:
-  void on_key_event(const KeyEvent &event) final {
+ private:
+  void on_key_event(const KeyEvent& event) final {
     if (!event.isPress()) {
       return;
     }
@@ -101,8 +101,8 @@ private:
     }
     grid_texture_ = Texture(GL_TEXTURE_2D);
     grid_texture_->bind();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, tw, th, 0, GL_RGB,
-                 GL_FLOAT, texdata.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, tw, th, 0, GL_RGB, GL_FLOAT,
+                 texdata.data());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

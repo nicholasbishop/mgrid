@@ -6,19 +6,33 @@
 
 namespace mgrid {
 
-Camera::Camera() { update(); }
+Camera::Camera() {
+  update();
+}
 
-vec3 Camera::position() const { return position_; }
+vec3 Camera::position() const {
+  return position_;
+}
 
-mat4 Camera::view_matrix() const { return view_matrix_; }
+mat4 Camera::view_matrix() const {
+  return view_matrix_;
+}
 
-mat4 Camera::projection_matrix() const { return projection_matrix_; }
+mat4 Camera::projection_matrix() const {
+  return projection_matrix_;
+}
 
-mat4 Camera::view_projection_matrix() const { return view_projection_matrix_; }
+mat4 Camera::view_projection_matrix() const {
+  return view_projection_matrix_;
+}
 
-Angle Camera::height_angle() const { return height_angle_; }
+Angle Camera::height_angle() const {
+  return height_angle_;
+}
 
-Angle Camera::around_angle() const { return around_angle_; }
+Angle Camera::around_angle() const {
+  return around_angle_;
+}
 
 float Camera::aspect_ratio() const {
   if (height_ == 0) {

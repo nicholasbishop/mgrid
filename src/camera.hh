@@ -10,7 +10,7 @@
 namespace mgrid {
 
 class Camera {
-public:
+ public:
   Camera();
 
   vec3 position() const;
@@ -32,7 +32,7 @@ public:
 
   void set_size(int width, int height);
 
-private:
+ private:
   void update();
 
   vec3 target_;
@@ -50,4 +50,4 @@ private:
 };
 }
 
-#endif // SRC_CAMERA_HH_
+#endif  // SRC_CAMERA_HH_

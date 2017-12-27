@@ -10,7 +10,7 @@ struct GLFWwindow;
 namespace mgrid {
 
 class GLVersion {
-public:
+ public:
   GLVersion(const int major, const int minor);
 
   const int major;
@@ -25,7 +25,7 @@ class CursorPositionEvent {
 };
 
 class KeyEvent {
-public:
+ public:
   KeyEvent(const int key, const int scancode, const int action, const int mods);
 
   bool isPress() const;
@@ -53,7 +53,7 @@ class MouseButtonEvent {
 };
 
 class Size2i {
-public:
+ public:
   Size2i(const int width, const int height);
 
   const int width;
@@ -61,8 +61,8 @@ public:
 };
 
 class Window {
-public:
-  Window(const GLVersion &version);
+ public:
+  Window(const GLVersion& version);
 
   void close();
 
@@ -72,10 +72,10 @@ public:
 
   float aspect_ratio() const;
 
-private:
-  virtual void on_cursor_position_event(const CursorPositionEvent &event);
-  virtual void on_key_event(const KeyEvent &event);
-  virtual void on_mouse_button_event(const MouseButtonEvent &event);
+ private:
+  virtual void on_cursor_position_event(const CursorPositionEvent& event);
+  virtual void on_key_event(const KeyEvent& event);
+  virtual void on_mouse_button_event(const MouseButtonEvent& event);
 
   virtual void initialize() = 0;
 
@@ -83,21 +83,26 @@ private:
 
   virtual void clean_up() = 0;
 
-  static void cursor_pos_callback(GLFWwindow *const window,
-                                  const double xpos, const double ypos);
+  static void cursor_pos_callback(GLFWwindow* const window,
+                                  const double xpos,
+                                  const double ypos);
 
-  static void key_callback(GLFWwindow *const window, const int key,
-                           const int scancode, const int action,
+  static void key_callback(GLFWwindow* const window,
+                           const int key,
+                           const int scancode,
+                           const int action,
                            const int mode);
 
-  static void mouse_button_callback(GLFWwindow *const window, const int button,
-                                    const int action, const int mods);
+  static void mouse_button_callback(GLFWwindow* const window,
+                                    const int button,
+                                    const int action,
+                                    const int mods);
 
-  static Window *from_user_pointer(GLFWwindow* const window);
+  static Window* from_user_pointer(GLFWwindow* const window);
 
-  GLFWwindow *wnd_;
+  GLFWwindow* wnd_;
   bool is_initialized_ = false;
 };
 }
 
-#endif // SRC_WINDOW_HH_
+#endif  // SRC_WINDOW_HH_
