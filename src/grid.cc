@@ -42,9 +42,8 @@ optional<vec4> Grid::intersect_ray(const Ray3& ray) {
 
     vec2 bary;
     float dist{};
-    if (glm::intersectRayTriangle(ray.origin, ray.direction,
-                             tri.A, tri.B, tri.C,
-                             bary, dist)) {
+    if (glm::intersectRayTriangle(ray.origin, ray.direction, tri.A, tri.B,
+                                  tri.C, bary, dist)) {
       if ((!hit) || (dist < hit->w)) {
         hit = vec4(bary, 1.0f - bary.x - bary.y, dist);
       }

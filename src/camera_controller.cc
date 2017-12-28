@@ -32,5 +32,4 @@ void CameraController::set_rotate(const vec2& pos) {
 void CameraController::end_rotate() {
   in_rotate_ = false;
 }
-
 }
