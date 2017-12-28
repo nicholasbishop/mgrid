@@ -25,7 +25,7 @@ TEST_CASE("grid-triangle iteration", "[intersection]") {
   using TriangleIndices = std::array<std::size_t, 3>;
 
   std::vector<TriangleIndices> record;
-  const std::vector<TriangleIndices> expected = {{0, 1, 2}, {0, 2, 3}};
+  const std::vector<TriangleIndices> expected = {{0, 2, 1}, {0, 3, 2}};
   grid1x1.triangle_iter(
       [&record](const TriangleIndices& ind) { record.emplace_back(ind); });
   REQUIRE(record == expected);
