@@ -16,7 +16,10 @@ class CursorPositionEvent {
 
 class KeyEvent {
  public:
-  KeyEvent(const int key, const int scancode, const int action, const int mods);
+  KeyEvent(const int key,
+           const int scancode,
+           const int action,
+           const int mods);
 
   bool isPress() const;
 
