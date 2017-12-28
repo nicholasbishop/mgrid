@@ -11,23 +11,17 @@
 #include "camera_controller.hh"
 #include "common.hh"
 #include "draw_mesh.hh"
+#include "draw_ray.hh"
 #include "errors.hh"
 #include "grid.hh"
 #include "sculpt.hh"
 #include "shader.hh"
+#include "resources.hh"
 #include "texture.hh"
 #include "vao.hh"
 #include "window.hh"
 
 using namespace mgrid;
-
-std::string read_resource_string(const std::string& path) {
-  auto r = cmrc::open(path);
-  if (!r.begin()) {
-    throw std::runtime_error("invalid resource: " + path);
-  }
-  return {r.begin(), r.end()};
-}
 
 class Axes {
  public:
@@ -71,12 +65,6 @@ class App : public Window {
     return !!hit;
   }
 
-  void update_ray_pos(const vec2& pos) {
-    const auto ray = camera_.ray(pos);
-    vec3 vertices[2] = {ray.origin, ray.origin + ray.direction};
-    ray_vbo_->set_data(vertices, sizeof(vertices), GL_STATIC_DRAW);
-  }
-
   void on_cursor_position_event(const CursorPositionEvent& event) final {
     if (camera_controller_.in_rotate()) {
       camera_controller_.set_rotate(event.pos);
@@ -114,6 +102,8 @@ class App : public Window {
   void on_mouse_button_event(const MouseButtonEvent& event) final {
     if (event.isLeftButton()) {
       if (event.isPress()) {
+        mouse_draw_ray_->update_ray(camera_.ray(event.pos));
+
         if (over_mesh(event.pos)) {
           sculpt_.start();
         } else {
@@ -124,25 +114,6 @@ class App : public Window {
         sculpt_.stop();
       }
     }
-  }
-
-  void init_ray_mesh() {
-    const auto vs = read_resource_string("src/shaders/basic.vert.glsl");
-    const auto fs = read_resource_string("src/shaders/basic.frag.glsl");
-
-    ray_draw_mesh_ = DrawMesh();
-    ray_draw_mesh_->vao().bind();
-    ray_vbo_ = ray_draw_mesh_->add_array_buffer();
-
-    auto& program = ray_draw_mesh_->program();
-    program.create_vert_shader(vs);
-    program.create_frag_shader(fs);
-    program.link();
-
-    const auto vpos_location = program.attribute_location("vPos");
-    update_ray_pos({0, 0});
-    ray_draw_mesh_->vao().set_attribute_data(vpos_location, 3, GL_FLOAT,
-                                             nullptr);
   }
 
   void init_grid_mesh() {
@@ -194,8 +165,8 @@ class App : public Window {
 
   void initialize() final {
     init_grid_mesh();
-    init_ray_mesh();
     axes_ = Axes();
+    mouse_draw_ray_ = DrawRay();
   }
 
   void render() final {
@@ -210,23 +181,19 @@ class App : public Window {
     glPatchParameteri(GL_PATCH_VERTICES, 4);
     grid_draw_mesh_->draw(GL_PATCHES, 4);
 
-    ray_draw_mesh_->program().set_uniform("MVP", mvp);
-    ray_draw_mesh_->draw(GL_LINES, 2);
-
     axes_->draw(mvp);
+    mouse_draw_ray_->draw(mvp);
   }
 
   void clean_up() {
     grid_draw_mesh_ = nullopt;
-    ray_draw_mesh_ = nullopt;
     axes_ = nullopt;
+    mouse_draw_ray_ = nullopt;
   }
 
   optional<DrawMesh> grid_draw_mesh_;
-  optional<DrawMesh> ray_draw_mesh_;
   optional<Axes> axes_;
-
-  Vbo* ray_vbo_;
+  optional<DrawRay> mouse_draw_ray_;
 
   Camera camera_;
   CameraController camera_controller_{camera_};

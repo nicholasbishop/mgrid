@@ -27,12 +27,14 @@ add_library(internal
   src/camera.cc
   src/camera_controller.cc
   src/draw_mesh.cc
+  src/draw_ray.cc
   src/errors.cc
   src/events.cc
   src/grid.cc
   src/intersect_ray_triangle.cc
   src/sculpt.cc
   src/shader.cc
+  src/resources.cc
   src/texture.cc
   src/vao.cc
   src/window.cc)
