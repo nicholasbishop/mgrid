@@ -84,7 +84,7 @@ class App : public Window {
       const auto ray = camera_.ray(event.pos);
       const auto hit = grid_.intersect_ray(ray);
       if (hit) {
-        const auto hit_loc = ray.origin + ray.direction * hit->w;
+        const auto hit_loc = ray.origin + ray.direction * hit->distance;
         sculpt_.move(hit_loc);
         update_grid_texture();
       }

@@ -34,20 +34,29 @@ void Grid::make_random(const ivec2& res) {
   }
 }
 
-optional<vec4> Grid::intersect_ray(const Ray3& ray) {
-  optional<vec4> hit;
+optional<Hit> Grid::intersect_ray(const Ray3& ray) {
+  optional<Hit> hit;
 
-  triangle_iter([this, &ray, &hit](const std::array<std::size_t, 3>& ind) {
+  const auto ray_data = RayData::from_ray(ray);
+
+  triangle_iter([&](const std::array<std::size_t, 3>& ind) {
     Triangle tri{points_[ind[0]], points_[ind[1]], points_[ind[2]]};
 
-    vec2 bary;
-    float dist{};
-    if (glm::intersectRayTriangle(ray.origin, ray.direction, tri.A, tri.B,
-                                  tri.C, bary, dist)) {
-      if ((!hit) || (dist < hit->w)) {
-        hit = vec4(bary, 1.0f - bary.x - bary.y, dist);
+    const auto new_hit{ray_data.intersect_triangle(tri)};
+    if (new_hit) {
+      if (hit && new_hit->distance < hit->distance) {
+        hit = new_hit;
+      } else if (!hit) {
+        hit = new_hit;
       }
     }
+      
+    // if (glm::intersectRayTriangle(ray.origin, ray.direction, tri.A, tri.B,
+    //                               tri.C, bary, dist)) {
+    //   if ((!hit) || (dist < hit->w)) {
+    //     hit = vec4(bary, 1.0f - bary.x - bary.y, dist);
+    //   }
+    // }
   });
 
   return hit;

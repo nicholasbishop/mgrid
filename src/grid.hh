@@ -24,7 +24,7 @@ class Grid {
 
   void make_random(const ivec2& res);
 
-  optional<vec4> intersect_ray(const Ray3& ray);
+  optional<Hit> intersect_ray(const Ray3& ray);
 
   vec3* data() { return points_.data(); }
 

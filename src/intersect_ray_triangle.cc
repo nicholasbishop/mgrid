@@ -1,3 +1,14 @@
+// Adapted from https://github.com/rkruppe/watertri.rs
+//
+// An implementation of the ray-triangle intersection algorithm
+// described in:
+//
+// > Sven Woop, Carsten Benthin, and Ingo Wald. "Watertight
+// > ray/triangle intersection."  Journal of Computer Graphics
+// > Techniques (JCGT) 2.1 (2013): 65-82.
+//
+// Does not perform backface culling.
+
 #include "intersect_ray_triangle.hh"
 
 #include "glm/glm.hpp"
@@ -6,22 +17,99 @@
 
 namespace mgrid {
 
-template <typename T>
-int max_dim(const T& vec) {
-  if (vec.x > vec.y) {
-    if (vec.x > vec.z) {
+int max_dim(const vec3& v) {
+  const auto x = fabsf(v.x);
+  const auto y = fabsf(v.y);
+  const auto z = fabsf(v.z);
+
+  if (x > y) {
+    // y isn't the maximum, so it's either x or z
+    if (x > z) {
       return 0;
     } else {
       return 2;
     }
+  } else if (y > z) {
+    // x isn't the maximum, so it's either y or z
+    return 1;
   } else {
-    if (vec.y > vec.z) {
-      return 1;
-    } else {
-      return 2;
-    }
+    return 2;
   }
 }
+
+RayData RayData::from_ray(const Ray3& src) {
+  // The paper swaps kx and ky if dir[kz] is negative, to preserve
+  // winding order. But winding order is only relevant for backface
+  // culling, which we don't perform.
+  RayData dst;
+  dst.kz = max_dim(src.direction);
+  dst.kx = (dst.kz + 1) % 3;
+  dst.ky = (dst.kz + 2) % 3;
+  dst.Sx = src.direction[dst.kx] / src.direction[dst.kz];
+  dst.Sy = src.direction[dst.ky] / src.direction[dst.kz];
+  dst.Sz = 1.0 / src.direction[dst.kz];
+  dst.org = src.origin;
+  return dst;
+}
+
+Hit::Hit(const vec3& barycentric, const float distance)
+    : barycentric(barycentric), distance(distance) {}
+
+double to_double(const float f) {
+  return static_cast<double>(f);
+}
+
+float to_float(const double f) {
+  return static_cast<float>(f);
+}
+
+// Perform the intersection calculation.
+optional<Hit> RayData::intersect_triangle(const Triangle& tri) const {
+  const auto A = tri.A - org;
+  const auto B = tri.B - org;
+  const auto C = tri.C - org;
+  
+  const auto Ax = tri.A[kx] - Sx * A[kz];
+  const auto Ay = tri.A[ky] - Sy * A[kz];
+  const auto Bx = tri.B[kx] - Sx * B[kz];
+  const auto By = tri.B[ky] - Sy * B[kz];
+  const auto Cx = tri.C[kx] - Sx * C[kz];
+  const auto Cy = tri.C[ky] - Sy * C[kz];
+
+  auto U = Cx * By - Cy * Bx;
+  auto V = Ax * Cy - Ay * Cx;
+  auto W = Bx * Ay - By * Ax;
+
+  if (U == 0. || V == 0. || W == 0.) {
+    const auto CxBy = to_double(Cx) * to_double(By);
+    const auto CyBx = to_double(Cy) * to_double(Bx);
+    U = to_float(CxBy - CyBx);
+    const auto AxCy = to_double(Ax) * to_double(Cy);
+    const auto AyCx = to_double(Ay) * to_double(Cx);
+    V = to_float(AxCy - AyCx);
+    const auto BxAy = to_double(Bx) * to_double(Ay);
+    const auto ByAx = to_double(By) * to_double(Ax);
+    W = to_float(BxAy - ByAx);
+  }
+
+  if ((U < 0. || V < 0. || W < 0.) && (U > 0. || V > 0. || W > 0.)) {
+    return nullopt;
+  }
+
+  const auto det = U + V + W;
+  if (det == 0.) {
+    return nullopt;
+  }
+
+  const auto Az = Sz * A[kz];
+  const auto Bz = Sz * B[kz];
+  const auto Cz = Sz * C[kz];
+  const auto T = U * Az + V * Bz + W * Cz;
+
+  const auto rcpDet = 1.0f / det;
+  return Hit{{U * rcpDet, V * rcpDet, W * rcpDet}, T * rcpDet};
+}
+
 
 uint32_t sign_mask(const float val) {
   if (val < 0.0f) {
