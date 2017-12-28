@@ -20,7 +20,6 @@ class Vao {
  private:
   GLuint handle_ = 0;
 };
-
 }
 
 #endif  // SRC_VAO_HH_

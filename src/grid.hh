@@ -23,9 +23,7 @@ class Grid {
 
   optional<vec4> intersect_ray(const Ray3& ray);
 
-  vec3* data() {
-    return points_.data();
-  }
+  vec3* data() { return points_.data(); }
 
  private:
   std::vector<vec3> points_;

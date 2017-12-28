@@ -37,21 +37,19 @@ optional<vec4> Grid::intersect_ray(const Ray3& ray) {
   for (int y = 1; y < h; y++) {
     for (int x = 1; x < w; x++) {
       const int ind[4] = {
-        (y - 1) * w + (x - 1),
-        (y - 1) * w + (x - 0),
-        (y - 0) * w + (x - 0),
-        (y - 0) * w + (x - 1),
+          (y - 1) * w + (x - 1), (y - 1) * w + (x - 0), (y - 0) * w + (x - 0),
+          (y - 0) * w + (x - 1),
       };
       const int pattern[2][3] = {{0, 1, 2}, {0, 2, 3}};
       for (int t = 0; t < 2; t++) {
-        Triangle tri{points_[ind[pattern[t][0]]],
-                     points_[ind[pattern[t][1]]],
+        Triangle tri{points_[ind[pattern[t][0]]], points_[ind[pattern[t][1]]],
                      points_[ind[pattern[t][2]]]};
-          
+
         //   GLM_FUNC_DECL bool intersectRayTriangle(
-		// vec<3, T, Q> const& orig, vec<3, T, Q> const& dir,
-		// vec<3, T, Q> const& v0, vec<3, T, Q> const& v1, vec<3, T, Q> const& v2,
-		// vec<3, T, Q>& baryPosition, T& distance);
+        // vec<3, T, Q> const& orig, vec<3, T, Q> const& dir,
+        // vec<3, T, Q> const& v0, vec<3, T, Q> const& v1, vec<3, T, Q> const&
+        // v2,
+        // vec<3, T, Q>& baryPosition, T& distance);
 
         const auto res = intersect_ray_triangle(ray, tri);
         if (res && hit && res->w < hit->w) {

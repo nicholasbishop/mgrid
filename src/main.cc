@@ -120,8 +120,8 @@ class App : public Window {
 
     grid_texture_ = Texture(GL_TEXTURE_2D);
     grid_texture_->bind();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, grid_.res().x, grid_.res().y,
-                 0, GL_RGB, GL_FLOAT, grid_.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, grid_.res().x, grid_.res().y, 0,
+                 GL_RGB, GL_FLOAT, grid_.data());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

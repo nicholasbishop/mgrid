@@ -27,5 +27,4 @@ Vao& Vao::operator=(Vao&& other) {
 void Vao::bind() {
   glBindVertexArray(handle_);
 }
-
 }
