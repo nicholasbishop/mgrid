@@ -20,16 +20,25 @@ cmrc_add_resource_library(resources
   src/shaders/grid_tess_eval.glsl
   src/shaders/grid_vert.glsl)
 
-add_executable(mgrid
+add_library(internal
   src/angle.cc
   src/camera.cc
   src/errors.cc
   src/events.cc
   src/grid.cc
   src/intersect_ray_triangle.cc
-  src/main.cc
   src/shader.cc
   src/texture.cc
   src/window.cc)
 
-target_link_libraries(mgrid ${LIBEPOXY_LIBRARIES} glfw resources)
+add_executable(mgrid src/main.cc)
+
+add_executable(tests
+  test/test_camera.cc
+  test/test_intersect.cc
+  test/test_main.cc)
+
+target_link_libraries(internal ${LIBEPOXY_LIBRARIES} glfw resources)
+
+target_link_libraries(mgrid internal)
+target_link_libraries(tests internal)

@@ -3,6 +3,9 @@
 #include "glm/vec2.hpp"
 #include "glm/vec4.hpp"
 
+// #define GLM_ENABLE_EXPERIMENTAL
+// #include "glm/gtx/intersect.hpp"
+
 #include "intersect_ray_triangle.hh"
 
 namespace mgrid {
@@ -44,6 +47,12 @@ optional<vec4> Grid::intersect_ray(const Ray3& ray) {
         Triangle tri{points_[ind[pattern[t][0]]],
                      points_[ind[pattern[t][1]]],
                      points_[ind[pattern[t][2]]]};
+          
+        //   GLM_FUNC_DECL bool intersectRayTriangle(
+		// vec<3, T, Q> const& orig, vec<3, T, Q> const& dir,
+		// vec<3, T, Q> const& v0, vec<3, T, Q> const& v1, vec<3, T, Q> const& v2,
+		// vec<3, T, Q>& baryPosition, T& distance);
+
         const auto res = intersect_ray_triangle(ray, tri);
         if (res && hit && res->w < hit->w) {
           hit = res;

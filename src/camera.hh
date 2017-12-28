@@ -39,8 +39,8 @@ class Camera {
   void update();
 
   vec3 target_;
-  Angle height_angle_ = Angle::from_degrees(80);
-  Angle around_angle_ = Angle::from_degrees(80);
+  Angle height_angle_ = Angle::from_degrees(0);
+  Angle around_angle_ = Angle::from_degrees(0);
   float distance_ = 2;
 
   ivec2 size_ = {1, 1};

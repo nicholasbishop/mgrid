@@ -40,7 +40,7 @@ vec3 Camera::unproject(const vec3& win) const {
 }
 
 Ray3 Camera::ray(const vec2& win) const {
-  vec3 win_origin{win.x, win.y, 0};
+  vec3 win_origin{win.x, win.y, -1};
   vec3 win_target{win.x, win.y, 1};
   const auto origin = unproject(win_origin);
   const auto target = unproject(win_target);
@@ -62,11 +62,17 @@ void Camera::set_size(const ivec2& size) {
   update();
 }
 
+void Camera::set_distance(const float distance) {
+  distance_ = distance;
+  update();
+}
+
 void Camera::update() {
   // TODO
-  position_[0] = cos(around_angle_.in_radians()) * distance_;
-  position_[1] = cos(height_angle_.in_radians()) * distance_;
-  position_[2] = sin(around_angle_.in_radians()) * distance_;
+  position_[0] = sin(around_angle_.in_radians()) * distance_;
+  position_[2] = cos(around_angle_.in_radians()) * distance_;
+
+  position_[1] = sin(height_angle_.in_radians()) * distance_;
 
   view_matrix_ = glm::lookAt(position_, target_, vec3(0, 1, 0));
 
