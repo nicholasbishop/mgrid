@@ -9,6 +9,7 @@
 
 #include "camera.hh"
 #include "common.hh"
+#include "draw_mesh.hh"
 #include "errors.hh"
 #include "grid.hh"
 #include "shader.hh"
@@ -92,36 +93,33 @@ class App : public Window {
     glDisable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
-    vao_ = Vao();
-    vao_->bind();
+    grid_draw_mesh_ = DrawMesh();
+    auto& vbo = grid_draw_mesh_->add_array_buffer();
+    vbo.set_data(vertices, sizeof(vertices), GL_STATIC_DRAW);
 
-    vbo_ = Vbo(GL_ARRAY_BUFFER);
-    vbo_->set_data(vertices, sizeof(vertices), GL_STATIC_DRAW);
+    auto& program = grid_draw_mesh_->program();
+    program.create_vert_shader(vs);
+    program.create_frag_shader(fs);
+    program.create_geom_shader(gs);
+    program.create_tess_ctrl_shader(tcs);
+    program.create_tess_eval_shader(tes);
 
-    program_ = ShaderProgram();
-    program_->create_vert_shader(vs);
-    program_->create_frag_shader(fs);
-    program_->create_geom_shader(gs);
-    program_->create_tess_ctrl_shader(tcs);
-    program_->create_tess_eval_shader(tes);
+    program.link();
 
-    program_->link();
-
-    mvp_location = program_->uniform_location("modelViewProjection");
-    vpos_location = program_->attribute_location("vertexPosition");
-    vao_->set_attribute_data(vpos_location, 2, GL_FLOAT, nullptr);
+    mvp_location = program.uniform_location("modelViewProjection");
+    vpos_location = program.attribute_location("vertexPosition");
+    grid_draw_mesh_->vao().set_attribute_data(vpos_location, 2, GL_FLOAT, nullptr);
 
     grid_.make_random({4, 4});
 
-    grid_texture_ = Texture(GL_TEXTURE_2D);
-    grid_texture_->bind();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, grid_.res().x, grid_.res().y, 0,
-                 GL_RGB, GL_FLOAT, grid_.data());
+    auto& grid_texture = grid_draw_mesh_->add_texture();
+    grid_texture.set_data(GL_RGB32F, grid_.res(), GL_RGB,
+                          GL_FLOAT, grid_.data());
 
-    const auto tex_location = program_->uniform_location("gridTex");
+    const auto tex_location = program.uniform_location("gridTex");
     glUniform1i(tex_location, 0);
-    glActiveTexture(GL_TEXTURE0 + 0);
-    grid_texture_->bind();
+    // glActiveTexture(GL_TEXTURE0 + 0);
+    // grid_texture.bind();
   }
 
   void render() final {
@@ -130,23 +128,17 @@ class App : public Window {
     glViewport(0, 0, size.x, size.y);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     const auto mvp = camera_.view_projection_matrix();
-    program_->bind();
+    grid_draw_mesh_->program().bind();
     glUniformMatrix4fv(mvp_location, 1, GL_FALSE, &mvp[0][0]);
     glPatchParameteri(GL_PATCH_VERTICES, 4);
     glDrawArrays(GL_PATCHES, 0, 4);
   }
 
   void clean_up() {
-    program_ = nullopt;
-    grid_texture_ = nullopt;
-    vao_ = nullopt;
-    vbo_ = nullopt;
+    grid_draw_mesh_ = nullopt;
   }
 
-  optional<ShaderProgram> program_;
-  optional<Texture> grid_texture_;
-  optional<Vao> vao_;
-  optional<Vbo> vbo_;
+  optional<DrawMesh> grid_draw_mesh_;
   GLint mvp_location, vpos_location;
   Camera camera_;
   bool in_left_drag_ = false;

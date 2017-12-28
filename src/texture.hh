@@ -3,6 +3,8 @@
 
 #include <epoxy/gl.h>
 
+#include "common.hh"
+
 namespace mgrid {
 
 class Texture {
@@ -15,6 +17,15 @@ class Texture {
   Texture& operator=(Texture&& other);
 
   void bind();
+
+  void set_data(
+      GLint internalFormat,
+      const ivec2& size,
+      GLenum format,
+      GLenum type,
+      const GLvoid* data);
+
+  GLuint handle() const { return handle_; }
 
  private:
   GLenum target_;

@@ -1,5 +1,3 @@
-// Copyright 2017 Neverware
-
 #ifndef SRC_ANGLE_HH_
 #define SRC_ANGLE_HH_
 
