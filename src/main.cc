@@ -13,6 +13,7 @@
 #include "draw_mesh.hh"
 #include "errors.hh"
 #include "grid.hh"
+#include "sculpt.hh"
 #include "shader.hh"
 #include "texture.hh"
 #include "vao.hh"
@@ -79,6 +80,14 @@ class App : public Window {
   void on_cursor_position_event(const CursorPositionEvent& event) final {
     if (camera_controller_.in_rotate()) {
       camera_controller_.set_rotate(event.pos);
+    } else if (sculpt_.in_drag()) {
+      const auto ray = camera_.ray(event.pos);
+      const auto hit = grid_.intersect_ray(ray);
+      if (hit) {
+        const auto hit_loc = ray.origin + ray.direction * hit->w;
+        sculpt_.move(hit_loc);
+        update_grid_texture();
+      }
     }
   }
 
@@ -105,11 +114,14 @@ class App : public Window {
   void on_mouse_button_event(const MouseButtonEvent& event) final {
     if (event.isLeftButton()) {
       if (event.isPress()) {
-        if (!over_mesh(event.pos)) {
+        if (over_mesh(event.pos)) {
+          sculpt_.start();
+        } else {
           camera_controller_.start_rotate(event.pos);
         }
       } else {
         camera_controller_.end_rotate();
+        sculpt_.stop();
       }
     }
   }
@@ -164,16 +176,20 @@ class App : public Window {
     grid_draw_mesh_->vao().set_attribute_data(vpos_location, 2, GL_FLOAT,
                                               nullptr);
 
-    grid_.make_random({4, 4});
+    grid_.make_random({64, 64});
 
-    auto* grid_texture = grid_draw_mesh_->add_texture();
-    grid_texture->set_data(GL_RGB32F, grid_.res(), GL_RGB, GL_FLOAT,
-                           grid_.data());
+    grid_texture_ = grid_draw_mesh_->add_texture();
+    update_grid_texture();
 
     const auto tex_location = program.uniform_location("gridTex");
     glUniform1i(tex_location, 0);
     // glActiveTexture(GL_TEXTURE0 + 0);
     // grid_texture.bind();
+  }
+
+  void update_grid_texture() {
+    grid_texture_->set_data(GL_RGB32F, grid_.res(), GL_RGB, GL_FLOAT,
+                            grid_.data());
   }
 
   void initialize() final {
@@ -215,6 +231,8 @@ class App : public Window {
   Camera camera_;
   CameraController camera_controller_{camera_};
   Grid grid_;
+  Sculpt sculpt_{grid_};
+  Texture* grid_texture_;
 };
 
 int main(void) {

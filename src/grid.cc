@@ -52,4 +52,5 @@ optional<vec4> Grid::intersect_ray(const Ray3& ray) {
 
   return hit;
 }
+
 }

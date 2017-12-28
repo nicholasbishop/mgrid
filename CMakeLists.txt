@@ -31,6 +31,7 @@ add_library(internal
   src/events.cc
   src/grid.cc
   src/intersect_ray_triangle.cc
+  src/sculpt.cc
   src/shader.cc
   src/texture.cc
   src/vao.cc

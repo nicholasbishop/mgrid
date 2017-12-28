@@ -29,6 +29,9 @@ class Grid {
   vec3* data() { return points_.data(); }
 
   template <typename F>
+  void points_iter(F f);
+
+  template <typename F>
   void triangle_iter(F f);
 
  private:
