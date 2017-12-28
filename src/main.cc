@@ -95,8 +95,7 @@ class App : public Window {
     vao_ = Vao();
     vao_->bind();
 
-    // NOTE: OpenGL error checks have been omitted for brevity
-    glGenBuffers(1, &vertex_buffer);
+    vertex_buffer = vao_->create_buffer();
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
@@ -122,10 +121,6 @@ class App : public Window {
     grid_texture_->bind();
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, grid_.res().x, grid_.res().y, 0,
                  GL_RGB, GL_FLOAT, grid_.data());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     const auto tex_location = program_->uniform_location("gridTex");
     glUniform1i(tex_location, 0);

@@ -17,6 +17,8 @@ class Vao {
 
   void bind();
 
+  GLuint create_buffer();
+
  private:
   GLuint handle_ = 0;
 };

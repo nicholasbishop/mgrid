@@ -27,4 +27,14 @@ Vao& Vao::operator=(Vao&& other) {
 void Vao::bind() {
   glBindVertexArray(handle_);
 }
+
+GLuint Vao::create_buffer() {
+  GLuint buf = 0;
+  glGenBuffers(1, &buf);
+  if (!buf) {
+    throw GLError("glGenBuffers failed");
+  }
+  return buf;
+}
+
 }

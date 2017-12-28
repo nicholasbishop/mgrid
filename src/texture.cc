@@ -11,6 +11,13 @@ Texture::Texture(GLenum target) : target_(target), handle_(0) {
   if (!handle_) {
     throw GLError("glCreateTextures failed");
   }
+
+  // Set some sensible defaults
+  bind();
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 Texture::Texture(Texture&& other) {
