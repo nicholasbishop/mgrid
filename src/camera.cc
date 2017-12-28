@@ -40,11 +40,12 @@ vec3 Camera::unproject(const vec3& win) const {
 }
 
 Ray3 Camera::ray(const vec2& win) const {
-  vec3 win_origin{win.x, win.y, -1};
-  vec3 win_target{win.x, win.y, 1};
+  const auto y = size_.y - win.y - 1;
+  vec3 win_origin{win.x, y, -1};
+  vec3 win_target{win.x, y, 1};
   const auto origin = unproject(win_origin);
   const auto target = unproject(win_target);
-  return Ray3{origin, glm::normalize(target - origin)};
+  return Ray3{origin, target - origin};
 }
 
 void Camera::set_height_angle(const Angle angle) {

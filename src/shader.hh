@@ -24,8 +24,8 @@ class Shader {
  private:
   Shader(GLenum kind, GLuint handle);
 
-  GLenum kind_;
-  GLuint handle_;
+  GLenum kind_{};
+  GLuint handle_{};
 };
 
 class ShaderProgram {
@@ -51,8 +51,10 @@ class ShaderProgram {
 
   void bind();
 
+  void set_uniform(const std::string& name, const mat4& mat);
+
  private:
-  GLuint handle_;
+  GLuint handle_{};
   optional<Shader> frag_;
   optional<Shader> geom_;
   optional<Shader> tess_ctrl_;

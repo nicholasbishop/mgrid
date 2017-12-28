@@ -38,17 +38,17 @@ class Camera {
  private:
   void update();
 
-  vec3 target_;
+  vec3 target_{};
   Angle height_angle_ = Angle::from_degrees(0);
   Angle around_angle_ = Angle::from_degrees(0);
   float distance_ = 2;
 
   ivec2 size_ = {1, 1};
 
-  vec3 position_;
-  mat4 view_matrix_;
-  mat4 projection_matrix_;
-  mat4 view_projection_matrix_;
+  vec3 position_{};
+  mat4 view_matrix_{};
+  mat4 projection_matrix_{};
+  mat4 view_projection_matrix_{};
 };
 }
 

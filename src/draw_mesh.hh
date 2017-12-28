@@ -1,7 +1,7 @@
 #ifndef SRC_DRAW_MESH_HH_
 #define SRC_DRAW_MESH_HH_
 
-#include <vector>
+#include <list>
 
 #include "shader.hh"
 #include "texture.hh"
@@ -15,15 +15,17 @@ class DrawMesh {
 
   ShaderProgram& program() { return program_; }
 
-  Vbo& add_array_buffer();
+  Vbo* add_array_buffer();
 
-  Texture& add_texture();
+  Texture* add_texture();
+
+  void draw(const GLenum mode, const int num_vertices);
 
  private:
   Vao vao_;
   ShaderProgram program_;
-  std::vector<Vbo> vbos_;
-  std::vector<Texture> textures_;
+  std::list<Vbo> vbos_;
+  std::list<Texture> textures_;
 };
 
 }  // namespace mgrid

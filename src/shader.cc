@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include <string>
 
+#include "glm/mat4x4.hpp"
+
 #include "errors.hh"
 
 namespace mgrid {
@@ -40,6 +42,7 @@ Shader Shader::create(const GLenum kind, const std::string& contents) {
 }
 
 Shader::Shader(Shader&& other) {
+  std::swap(kind_, other.kind_);
   std::swap(handle_, other.handle_);
 }
 
@@ -54,6 +57,7 @@ Shader::~Shader() {
 }
 
 Shader& Shader::operator=(Shader&& other) {
+  std::swap(kind_, other.kind_);
   std::swap(handle_, other.handle_);
   return *this;
 }
@@ -114,11 +118,21 @@ void ShaderProgram::create_vert_shader(const std::string& code) {
 }
 
 void ShaderProgram::link() {
-  frag_->attach(handle_);
-  geom_->attach(handle_);
-  tess_ctrl_->attach(handle_);
-  tess_eval_->attach(handle_);
-  vert_->attach(handle_);
+  if (frag_) {
+    frag_->attach(handle_);
+  }
+  if (geom_) {
+    geom_->attach(handle_);
+  }
+  if (tess_ctrl_) {
+    tess_ctrl_->attach(handle_);
+  }
+  if (tess_eval_) {
+    tess_eval_->attach(handle_);
+  }
+  if (vert_) {
+    vert_->attach(handle_);
+  }
 
   check_gl_error("pre-link");
   glLinkProgram(handle_);
@@ -129,7 +143,7 @@ GLint ShaderProgram::uniform_location(const std::string& name) {
   bind();
   const auto loc = glGetUniformLocation(handle_, name.c_str());
   if (loc == -1) {
-    throw ShaderError("glGetUniformLocation failed");
+    throw ShaderError("glGetUniformLocation(\"" + name + "\") failed");
   }
   return loc;
 }
@@ -146,4 +160,13 @@ GLint ShaderProgram::attribute_location(const std::string& name) {
 void ShaderProgram::bind() {
   glUseProgram(handle_);
 }
+
+void ShaderProgram::set_uniform(const std::string& name, const mat4& mat) {
+  bind();
+  const auto loc = uniform_location(name);
+  const int count = 1;
+  const bool normalize = false;
+  glUniformMatrix4fv(loc, count, normalize, &mat[0][0]);
+}
+
 }
