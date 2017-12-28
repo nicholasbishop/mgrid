@@ -1,9 +1,31 @@
 #ifndef SRC_VAO_HH_
 #define SRC_VAO_HH_
 
+#include <cstdint>
+
 #include <epoxy/gl.h>
 
 namespace mgrid {
+
+class Vbo {
+ public:
+  Vbo(GLenum type);
+  Vbo(Vbo&&);
+  Vbo(Vbo&) = delete;
+
+  ~Vbo();
+
+  Vbo& operator=(Vbo&&);
+
+  void bind();
+
+  void set_data(const void* data, const std::size_t length,
+                const GLenum hint);
+
+ private:
+  GLenum kind_{};
+  GLuint handle_{};
+};
 
 class Vao {
  public:
@@ -17,10 +39,8 @@ class Vao {
 
   void bind();
 
-  GLuint create_buffer();
-
  private:
-  GLuint handle_ = 0;
+  GLuint handle_{};
 };
 }
 

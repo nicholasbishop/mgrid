@@ -95,9 +95,8 @@ class App : public Window {
     vao_ = Vao();
     vao_->bind();
 
-    vertex_buffer = vao_->create_buffer();
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    vbo_ = Vbo(GL_ARRAY_BUFFER);
+    vbo_->set_data(vertices, sizeof(vertices), GL_STATIC_DRAW);
 
     program_ = ShaderProgram();
     program_->create_vert_shader(vs);
@@ -144,12 +143,13 @@ class App : public Window {
     program_ = nullopt;
     grid_texture_ = nullopt;
     vao_ = nullopt;
+    vbo_ = nullopt;
   }
 
   optional<ShaderProgram> program_;
   optional<Texture> grid_texture_;
   optional<Vao> vao_;
-  GLuint vertex_buffer;
+  optional<Vbo> vbo_;
   GLint mvp_location, vpos_location;
   Camera camera_;
   bool in_left_drag_ = false;

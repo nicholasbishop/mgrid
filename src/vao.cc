@@ -1,8 +1,47 @@
 #include "vao.hh"
 
+#include <cassert>
+
 #include "errors.hh"
 
 namespace mgrid {
+
+Vbo::Vbo(const GLenum kind) : kind_(kind) {
+  // TODO(nicholasbishop): allow element buffer
+  assert(kind == GL_ARRAY_BUFFER);
+
+  glGenBuffers(1, &handle_);
+  if (!handle_) {
+    throw GLError("glGenBuffers failed");
+  }
+}
+
+Vbo::Vbo(Vbo&& other) {
+  std::swap(handle_, other.handle_);
+  std::swap(kind_, other.kind_);
+}
+
+Vbo::~Vbo() {
+  glDeleteBuffers(1, &handle_);
+}
+
+Vbo& Vbo::operator=(Vbo&& other) {
+  std::swap(handle_, other.handle_);
+  std::swap(kind_, other.kind_);
+  return *this;
+}
+
+void Vbo::bind() {
+  glBindBuffer(kind_, handle_);
+}
+
+void Vbo::set_data(const void* data, const std::size_t length,
+                   const GLenum hint) {
+  bind();
+  // TODO(nicholasbishop): allow other hints
+  assert(hint == GL_STATIC_DRAW);
+  glBufferData(kind_, length, data, hint);
+}
 
 Vao::Vao() {
   glGenVertexArrays(1, &handle_);
@@ -26,15 +65,6 @@ Vao& Vao::operator=(Vao&& other) {
 
 void Vao::bind() {
   glBindVertexArray(handle_);
-}
-
-GLuint Vao::create_buffer() {
-  GLuint buf = 0;
-  glGenBuffers(1, &buf);
-  if (!buf) {
-    throw GLError("glGenBuffers failed");
-  }
-  return buf;
 }
 
 }
