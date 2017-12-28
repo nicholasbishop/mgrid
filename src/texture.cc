@@ -41,25 +41,16 @@ void Texture::bind() {
   glBindTexture(GL_TEXTURE_2D, handle_);
 }
 
-void Texture::set_data(
-    const GLint internalFormat,
-    const ivec2& size,
-    const GLenum format,
-    const GLenum type,
-    const GLvoid* data) {
+void Texture::set_data(const GLint internalFormat,
+                       const ivec2& size,
+                       const GLenum format,
+                       const GLenum type,
+                       const GLvoid* data) {
   bind();
 
   const GLint level = 0;
   const GLint border = 0;
-  glTexImage2D(target_,
-               level,
-               internalFormat,
-               size.x,
-               size.y,
-               border,
-               format,
-               type,
-               data);
+  glTexImage2D(target_, level, internalFormat, size.x, size.y, border, format,
+               type, data);
 }
-
 }

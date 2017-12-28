@@ -19,8 +19,7 @@ class Vbo {
 
   void bind();
 
-  void set_data(const void* data, const std::size_t length,
-                const GLenum hint);
+  void set_data(const void* data, const std::size_t length, const GLenum hint);
 
  private:
   GLenum kind_{};

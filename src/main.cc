@@ -42,9 +42,7 @@ class Axes {
     program.link();
 
     vec3 vertices[2 * 3] = {
-      {0, 0, 0}, {1, 0, 0},
-      {0, 0, 0}, {0, 1, 0},
-      {0, 0, 0}, {0, 0, 1},
+        {0, 0, 0}, {1, 0, 0}, {0, 0, 0}, {0, 1, 0}, {0, 0, 0}, {0, 0, 1},
     };
     vbo.set_data(vertices, sizeof(vertices), GL_STATIC_DRAW);
     const auto vpos_location = program.attribute_location("vPos");
@@ -73,9 +71,7 @@ class App : public Window {
 
   void update_ray_pos(const vec2& pos) {
     const auto ray = camera_.ray(pos);
-    vec3 vertices[2] = {
-      ray.origin, ray.origin + ray.direction
-    };
+    vec3 vertices[2] = {ray.origin, ray.origin + ray.direction};
     ray_vbo_->set_data(vertices, sizeof(vertices), GL_STATIC_DRAW);
   }
 
@@ -139,7 +135,8 @@ class App : public Window {
 
     const auto vpos_location = program.attribute_location("vPos");
     update_ray_pos({0, 0});
-    ray_draw_mesh_->vao().set_attribute_data(vpos_location, 3, GL_FLOAT, nullptr);
+    ray_draw_mesh_->vao().set_attribute_data(vpos_location, 3, GL_FLOAT,
+                                             nullptr);
   }
 
   void init_grid_mesh() {
@@ -170,13 +167,14 @@ class App : public Window {
     program.link();
 
     const auto vpos_location = program.attribute_location("vertexPosition");
-    grid_draw_mesh_->vao().set_attribute_data(vpos_location, 2, GL_FLOAT, nullptr);
+    grid_draw_mesh_->vao().set_attribute_data(vpos_location, 2, GL_FLOAT,
+                                              nullptr);
 
     grid_.make_random({4, 4});
 
     auto* grid_texture = grid_draw_mesh_->add_texture();
-    grid_texture->set_data(GL_RGB32F, grid_.res(), GL_RGB,
-                           GL_FLOAT, grid_.data());
+    grid_texture->set_data(GL_RGB32F, grid_.res(), GL_RGB, GL_FLOAT,
+                           grid_.data());
 
     const auto tex_location = program.uniform_location("gridTex");
     glUniform1i(tex_location, 0);

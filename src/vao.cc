@@ -35,7 +35,8 @@ void Vbo::bind() {
   glBindBuffer(kind_, handle_);
 }
 
-void Vbo::set_data(const void* data, const std::size_t length,
+void Vbo::set_data(const void* data,
+                   const std::size_t length,
                    const GLenum hint) {
   bind();
   // TODO(nicholasbishop): allow other hints
@@ -76,8 +77,7 @@ void Vao::set_attribute_data(const GLint attrib,
 
   const int stride = 0;
   const bool normalized = false;
-  glVertexAttribPointer(attrib, components_per_vertex, type, normalized,
-                        stride, data);
+  glVertexAttribPointer(attrib, components_per_vertex, type, normalized, stride,
+                        data);
 }
-
 }

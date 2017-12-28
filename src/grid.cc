@@ -37,8 +37,12 @@ optional<vec4> Grid::intersect_ray(const Ray3& ray) {
   for (int y = 1; y < h; y++) {
     for (int x = 1; x < w; x++) {
       const int ind[4] = {
-          (y - 1) * w + (x - 1), (y - 1) * w + (x - 0), (y - 0) * w + (x - 0),
+          // clang-format off
+          (y - 1) * w + (x - 1),
+          (y - 1) * w + (x - 0),
+          (y - 0) * w + (x - 0),
           (y - 0) * w + (x - 1),
+          // clang-format on
       };
       const int pattern[2][3] = {{0, 1, 2}, {0, 2, 3}};
       for (int t = 0; t < 2; t++) {

@@ -168,5 +168,4 @@ void ShaderProgram::set_uniform(const std::string& name, const mat4& mat) {
   const bool normalize = false;
   glUniformMatrix4fv(loc, count, normalize, &mat[0][0]);
 }
-
 }

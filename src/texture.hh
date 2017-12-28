@@ -18,12 +18,11 @@ class Texture {
 
   void bind();
 
-  void set_data(
-      GLint internalFormat,
-      const ivec2& size,
-      GLenum format,
-      GLenum type,
-      const GLvoid* data);
+  void set_data(GLint internalFormat,
+                const ivec2& size,
+                GLenum format,
+                GLenum type,
+                const GLvoid* data);
 
   GLuint handle() const { return handle_; }
 
