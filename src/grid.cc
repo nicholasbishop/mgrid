@@ -9,7 +9,12 @@
 #include "intersect_ray_triangle.hh"
 
 namespace mgrid {
+
 Grid::Grid() {}
+
+Grid::Grid(const ivec2& res) : res_(res) {
+  points_.resize(res.x * res.y);
+}
 
 Grid::~Grid() {}
 

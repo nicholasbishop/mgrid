@@ -1,6 +1,8 @@
 #ifndef TEST_TEST_COMMON_HH_
 #define TEST_TEST_COMMON_HH_
 
+#include <ostream>
+
 #include "glm/gtc/epsilon.hpp"
 
 #define GLM_ENABLE_EXPERIMENTAL
