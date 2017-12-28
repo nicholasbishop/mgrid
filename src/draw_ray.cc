@@ -19,6 +19,7 @@ DrawRay::DrawRay() {
   program.link();
 
   const auto vpos_location = program.attribute_location("vPos");
+  vbo_->bind();
   mesh_.vao().set_attribute_data(vpos_location, 3, GL_FLOAT, nullptr);
 }
 
