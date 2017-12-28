@@ -20,11 +20,11 @@ void Sculpt::move(const vec3& center) {
 
   const float radius_squared = radius_ * radius_;
   grid_.points_iter([&](vec3& point) {
-      const float dsq = glm::distance2(center, point);
-      if (dsq < radius_squared) {
-        const float dist = sqrtf(dsq);
-        point.z += (radius_ - dist) * strength_;
-      }
+    const float dsq = glm::distance2(center, point);
+    if (dsq < radius_squared) {
+      const float dist = sqrtf(dsq);
+      point.z += (radius_ - dist) * strength_;
+    }
   });
 }
 

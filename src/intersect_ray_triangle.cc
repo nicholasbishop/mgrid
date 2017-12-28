@@ -68,7 +68,7 @@ optional<Hit> RayData::intersect_triangle(const Triangle& tri) const {
   const auto A = tri.A - org;
   const auto B = tri.B - org;
   const auto C = tri.C - org;
-  
+
   const auto Ax = tri.A[kx] - Sx * A[kz];
   const auto Ay = tri.A[ky] - Sy * A[kz];
   const auto Bx = tri.B[kx] - Sx * B[kz];
@@ -109,7 +109,6 @@ optional<Hit> RayData::intersect_triangle(const Triangle& tri) const {
   const auto rcpDet = 1.0f / det;
   return Hit{{U * rcpDet, V * rcpDet, W * rcpDet}, T * rcpDet};
 }
-
 
 uint32_t sign_mask(const float val) {
   if (val < 0.0f) {

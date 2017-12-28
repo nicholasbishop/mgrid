@@ -50,7 +50,7 @@ optional<Hit> Grid::intersect_ray(const Ray3& ray) {
         hit = new_hit;
       }
     }
-      
+
     // if (glm::intersectRayTriangle(ray.origin, ray.direction, tri.A, tri.B,
     //                               tri.C, bary, dist)) {
     //   if ((!hit) || (dist < hit->w)) {
@@ -61,5 +61,4 @@ optional<Hit> Grid::intersect_ray(const Ray3& ray) {
 
   return hit;
 }
-
 }
