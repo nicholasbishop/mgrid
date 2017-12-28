@@ -5,6 +5,8 @@ namespace mgrid {
 
 class Angle {
  public:
+  Angle();
+
   static Angle from_degrees(const float value);
 
   static Angle from_radians(const float value);
@@ -17,7 +19,7 @@ class Angle {
   Angle operator-(const Angle& other) const;
 
  private:
-  Angle(const float radians);
+  explicit Angle(const float radians);
 
   float radians_ = 0;
 };

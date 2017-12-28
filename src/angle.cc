@@ -4,6 +4,8 @@
 
 namespace mgrid {
 
+Angle::Angle() : radians_(0) {}
+
 Angle Angle::from_degrees(const float degrees) {
   return Angle(degrees * (M_PI / 180.0f));
 }

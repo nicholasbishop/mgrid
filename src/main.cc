@@ -8,6 +8,7 @@
 #include "cmrc/cmrc.hpp"
 
 #include "camera.hh"
+#include "camera_controller.hh"
 #include "common.hh"
 #include "draw_mesh.hh"
 #include "errors.hh"
@@ -76,14 +77,8 @@ class App : public Window {
   }
 
   void on_cursor_position_event(const CursorPositionEvent& event) final {
-    if (in_left_drag_) {
-      update_ray_pos(event.pos);
-
-      if (over_mesh(event.pos)) {
-        std::cout << "over mesh" << std::endl;
-      } else {
-        std::cout << "bg" << std::endl;
-      }
+    if (camera_controller_.in_rotate()) {
+      camera_controller_.set_rotate(event.pos);
     }
   }
 
@@ -110,12 +105,11 @@ class App : public Window {
   void on_mouse_button_event(const MouseButtonEvent& event) final {
     if (event.isLeftButton()) {
       if (event.isPress()) {
-        update_ray_pos(event.pos);
-
-        in_left_drag_ = true;
-        left_drag_start_ = event.pos;
+        if (!over_mesh(event.pos)) {
+          camera_controller_.start_rotate(event.pos);
+        }
       } else {
-        in_left_drag_ = false;
+        camera_controller_.end_rotate();
       }
     }
   }
@@ -219,8 +213,7 @@ class App : public Window {
   Vbo* ray_vbo_;
 
   Camera camera_;
-  bool in_left_drag_ = false;
-  vec2 left_drag_start_;
+  CameraController camera_controller_{camera_};
   Grid grid_;
 };
 

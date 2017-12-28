@@ -25,6 +25,7 @@ cmrc_add_resource_library(resources
 add_library(internal
   src/angle.cc
   src/camera.cc
+  src/camera_controller.cc
   src/draw_mesh.cc
   src/errors.cc
   src/events.cc
