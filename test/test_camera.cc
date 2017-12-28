@@ -5,10 +5,11 @@
 
 using namespace mgrid;
 
-TEST_CASE("ray generation", "[camera]") {
+TEST_CASE("unproject", "[camera]") {
   Camera cam;
   cam.set_distance(2);
   cam.set_size({2, 2});
-  const auto ray = cam.ray({1, 1});
-  assert_equalish(ray.direction, vec3{0, 0, -1});
+  const auto p = cam.unproject({1, 1, 0});
+  // 1.9 := distance - near
+  assert_equalish(p, vec3{0, 0, 1.9});
 }
