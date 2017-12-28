@@ -13,6 +13,7 @@
 #include "grid.hh"
 #include "shader.hh"
 #include "texture.hh"
+#include "vao.hh"
 #include "window.hh"
 
 using namespace mgrid;
@@ -91,8 +92,8 @@ class App : public Window {
     glDisable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
 
-    glGenVertexArrays(1, &vao_);
-    glBindVertexArray(vao_);
+    vao_ = Vao();
+    vao_->bind();
 
     // NOTE: OpenGL error checks have been omitted for brevity
     glGenBuffers(1, &vertex_buffer);
@@ -147,11 +148,12 @@ class App : public Window {
   void clean_up() {
     program_ = nullopt;
     grid_texture_ = nullopt;
+    vao_ = nullopt;
   }
 
   optional<ShaderProgram> program_;
   optional<Texture> grid_texture_;
-  GLuint vao_;
+  optional<Vao> vao_;
   GLuint vertex_buffer;
   GLint mvp_location, vpos_location;
   Camera camera_;

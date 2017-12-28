@@ -29,6 +29,7 @@ add_library(internal
   src/intersect_ray_triangle.cc
   src/shader.cc
   src/texture.cc
+  src/vao.cc
   src/window.cc)
 
 add_executable(mgrid src/main.cc)
