@@ -77,7 +77,7 @@ void Vao::set_attribute_data(const GLint attrib,
 
   const int stride = 0;
   const bool normalized = false;
-  glVertexAttribPointer(attrib, components_per_vertex, type, normalized, stride,
-                        data);
+  glVertexAttribPointer(attrib, components_per_vertex, type, normalized,
+                        stride, data);
 }
 }
