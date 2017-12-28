@@ -1,0 +1,2 @@
+#!/usr/bin/bash
+clang-format -i src/*.cc src/*.hh test/*.hh test/*.cc
