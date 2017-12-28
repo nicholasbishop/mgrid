@@ -22,8 +22,8 @@ void CameraController::set_rotate(const vec2& pos) {
 
   const auto delta = pos - orig_pos_;
 
-  const auto delta_around{Angle::from_degrees(delta.x)};
-  const auto delta_height{Angle::from_degrees(delta.y)};
+  const auto delta_around{Angle::from_degrees(delta.x / 2.0f)};
+  const auto delta_height{Angle::from_degrees(delta.y / 2.0f)};
 
   camera_.set_around_angle(orig_around_angle_ - delta_around);
   camera_.set_height_angle(orig_height_angle_ + delta_height);
