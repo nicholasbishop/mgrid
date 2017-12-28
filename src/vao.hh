@@ -39,6 +39,11 @@ class Vao {
 
   void bind();
 
+  void set_attribute_data(const GLint attrib,
+                          const int components_per_vertex,
+                          const GLenum component_type,
+                          const void* data);
+
  private:
   GLuint handle_{};
 };

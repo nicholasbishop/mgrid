@@ -67,4 +67,17 @@ void Vao::bind() {
   glBindVertexArray(handle_);
 }
 
+void Vao::set_attribute_data(const GLint attrib,
+                             const int components_per_vertex,
+                             const GLenum type,
+                             const void* data) {
+  bind();
+  glEnableVertexAttribArray(attrib);
+
+  const int stride = 0;
+  const bool normalized = false;
+  glVertexAttribPointer(attrib, components_per_vertex, type, normalized,
+                        stride, data);
+}
+
 }
