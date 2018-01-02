@@ -5,15 +5,11 @@
 
 using json = nlohmann::json;
 
-
 int main() {
   auto mesh = Mesh::cube();
   mesh.subdivide();
 
-  const json obj{
-    {"verts", mesh.verts()},
-    {"faces", mesh.quads()}
-  };
+  const json obj{{"verts", mesh.verts()}, {"faces", mesh.quads()}};
 
   mesh.validate();
 

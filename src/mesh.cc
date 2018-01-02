@@ -9,7 +9,7 @@ using std::unordered_set;
 
 namespace {
 
-template<typename C>
+template <typename C>
 vec3 average_vert_locs(C& container) {
   vec3 v{0};
   for (const auto& vert : container) {
@@ -157,18 +157,15 @@ EdgeKey Mesh::get_or_add_edge(const EdgeVerts& verts) {
 std::array<Vert*, 2> Mesh::get_edge_verts(EdgeKey ek) {
   const Edge& edge = edges_.at(ek);
   return {
-      &verts_.at(edge.verts().at(0)),
-      &verts_.at(edge.verts().at(1)),
+      &verts_.at(edge.verts().at(0)), &verts_.at(edge.verts().at(1)),
   };
 }
 
 std::array<Vert*, 4> Mesh::get_quad_verts(QuadKey ek) {
   const Quad& quad = quads_.at(ek);
   return {
-      &verts_.at(quad.verts().at(0)),
-      &verts_.at(quad.verts().at(1)),
-      &verts_.at(quad.verts().at(2)),
-      &verts_.at(quad.verts().at(3)),
+      &verts_.at(quad.verts().at(0)), &verts_.at(quad.verts().at(1)),
+      &verts_.at(quad.verts().at(2)), &verts_.at(quad.verts().at(3)),
   };
 }
 
@@ -179,9 +176,7 @@ QuadEdges Mesh::get_quad_edge_keys(const QuadKey qk) {
   const auto vk2 = quad.verts().at(2);
   const auto vk3 = quad.verts().at(3);
   return {
-      get_edge({vk0, vk1}),
-      get_edge({vk1, vk2}),
-      get_edge({vk2, vk3}),
+      get_edge({vk0, vk1}), get_edge({vk1, vk2}), get_edge({vk2, vk3}),
       get_edge({vk3, vk0}),
   };
 }
@@ -189,9 +184,7 @@ QuadEdges Mesh::get_quad_edge_keys(const QuadKey qk) {
 std::array<Edge*, 4> Mesh::get_quad_edges(const QuadKey qk) {
   const auto edges = get_quad_edge_keys(qk);
   return {
-      &edges_.at(edges[0]),
-      &edges_.at(edges[1]),
-      &edges_.at(edges[2]),
+      &edges_.at(edges[0]), &edges_.at(edges[1]), &edges_.at(edges[2]),
       &edges_.at(edges[3]),
   };
 }
@@ -219,8 +212,7 @@ QuadKey Mesh::add_quad_from_verts(const QuadVerts& verts) {
 void Mesh::remove_edge(EdgeKey ek) {
   const auto& edge = edges_.at(ek);
   // Adjacent quads are assumed to have already been removed
-  assert(!edge.quads()[0].valid() &&
-         !edge.quads()[1].valid());
+  assert(!edge.quads()[0].valid() && !edge.quads()[1].valid());
   for (const auto& vk : edge.verts()) {
     auto& vert = verts_.at(vk);
     vert.remove_edge(ek);
@@ -286,27 +278,16 @@ void Mesh::subdivide() {
     for (int i = 0; i < 4; i++) {
       const int j = (i == 0) ? 3 : i - 1;
       const int k = (i == 3) ? 0 : i + 1;
-      if (edges.count(quad_edge_keys[i]) &&
-          edges.count(quad_edge_keys[j])) {
-        add_quad_from_verts({
-            vk,
-            edge_verts[quad_edge_keys[j]],
-            quad_verts[i],
-            edge_verts[quad_edge_keys[i]]
-        });
+      if (edges.count(quad_edge_keys[i]) && edges.count(quad_edge_keys[j])) {
+        add_quad_from_verts({vk, edge_verts[quad_edge_keys[j]], quad_verts[i],
+                             edge_verts[quad_edge_keys[i]]});
       } else if (edges.count(quad_edge_keys[j])) {
         add_quad_from_verts({
-            vk,
-            edge_verts[quad_edge_keys[j]],
-            quad_verts[i],
-            quad_verts[k],
+            vk, edge_verts[quad_edge_keys[j]], quad_verts[i], quad_verts[k],
         });
       } else if (edges.count(quad_edge_keys[i])) {
         add_quad_from_verts({
-            vk,
-            quad_verts[j],
-            quad_verts[i],
-            edge_verts[quad_edge_keys[i]],
+            vk, quad_verts[j], quad_verts[i], edge_verts[quad_edge_keys[i]],
         });
       }
     }
@@ -325,7 +306,6 @@ void Mesh::validate() {
 void Mesh::check_for_loose_edges() {
   for (const auto& iter : edges_) {
     const auto& edge = iter.second;
-    assert(edge.quads()[0].valid() ||
-           edge.quads()[1].valid());
+    assert(edge.quads()[0].valid() || edge.quads()[1].valid());
   }
 }
