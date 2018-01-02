@@ -15,5 +15,7 @@ int main() {
     {"faces", mesh.quads()}
   };
 
+  mesh.validate();
+
   std::cout << obj << std::endl;
 }

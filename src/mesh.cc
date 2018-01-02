@@ -26,6 +26,15 @@ void Vert::add_edge(const EdgeKey ek) {
   edges_.emplace_back(ek);
 }
 
+void Vert::remove_edge(EdgeKey ek) {
+  for (auto iter = edges_.begin(); iter != edges_.end(); ++iter) {
+    if (*iter == ek) {
+      edges_.erase(iter);
+      return;
+    }
+  }
+}
+
 bool Edge::has_vert(const VertKey vk) const {
   return vk == verts_[0] || vk == verts_[1];
 }
@@ -207,6 +216,18 @@ QuadKey Mesh::add_quad_from_verts(const QuadVerts& verts) {
   return qk;
 }
 
+void Mesh::remove_edge(EdgeKey ek) {
+  const auto& edge = edges_.at(ek);
+  // Adjacent quads are assumed to have already been removed
+  assert(!edge.quads()[0].valid() &&
+         !edge.quads()[1].valid());
+  for (const auto& vk : edge.verts()) {
+    auto& vert = verts_.at(vk);
+    vert.remove_edge(ek);
+  }
+  edges_.erase(ek);
+}
+
 void Mesh::remove_quad(QuadKey qk) {
   auto edges = get_quad_edges(qk);
   for (auto& edge : edges) {
@@ -289,5 +310,22 @@ void Mesh::subdivide() {
         });
       }
     }
+  }
+
+  // Delete old edges
+  for (const auto& ek : edges) {
+    remove_edge(ek);
+  }
+}
+
+void Mesh::validate() {
+  check_for_loose_edges();
+}
+
+void Mesh::check_for_loose_edges() {
+  for (const auto& iter : edges_) {
+    const auto& edge = iter.second;
+    assert(edge.quads()[0].valid() ||
+           edge.quads()[1].valid());
   }
 }

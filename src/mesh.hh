@@ -31,6 +31,8 @@ class Vert {
 
   void add_edge(EdgeKey ek);
 
+  void remove_edge(EdgeKey ek);
+
  private:
   VertEdges edges_;
   glm::vec3 loc_;
@@ -91,9 +93,14 @@ class Mesh {
   EdgeKey add_edge(const EdgeVerts& verts);
   QuadKey add_quad_from_verts(const QuadVerts& verts);
 
+  void remove_edge(EdgeKey ek);
   void remove_quad(QuadKey qk);
 
   void subdivide();
+
+  void validate();
+
+  void check_for_loose_edges();
 
  private:
   VertMap verts_;
